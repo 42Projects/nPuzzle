@@ -2,6 +2,15 @@ package main
 
 import "testing"
 
+var generateEndStateTestCases = []struct {
+	size     int
+	expected Matrix
+}{
+	0: {3, Matrix{{1, 2, 3}, {8, 0, 4}, {7, 6, 5}}},
+	1: {4, Matrix{{1, 2, 3, 4}, {12, 13, 14, 5}, {11, 0, 15, 6}, {10, 9, 8, 7}}},
+	2: {5, Matrix{{1, 2, 3, 4, 5}, {16, 17, 18, 19, 6}, {15, 24, 0, 20, 7}, {14, 23, 22, 21, 8}, {13, 12, 11, 10, 9}}},
+}
+
 var getTilePositionTestCases = []struct {
 	input    Matrix
 	expected Point
@@ -48,6 +57,16 @@ var slideUpTestCases = []struct {
 }
 
 func PointsMatch(p1, p2 Point) bool { return p1.x == p2.x && p1.y == p2.y }
+
+func TestGenerateEndState(t *testing.T) {
+
+	for _, it := range generateEndStateTestCases {
+		res := generateEndState(it.size)
+		if MatricesMatch(res, it.expected) == false {
+			t.Fatalf("Size %v, got %v, expected %v", it.size, res, it.expected)
+		}
+	}
+}
 
 func TestGetTilePosition(t *testing.T) {
 
