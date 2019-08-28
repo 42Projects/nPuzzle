@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+//Matrix is a 2d array representation
 type Matrix [][]int
 
 func parseRow(line string, size int, checker *[]bool) ([]int, error) {
@@ -75,7 +76,7 @@ func parseFile(s string) (Matrix, error) {
 				return nil, errors.New("invalid file: grid is too small")
 			}
 			m = make([][]int, size)
-			checker = make([]bool, size * size)
+			checker = make([]bool, size*size)
 
 		/* Parse lines */
 		default:
@@ -91,28 +92,32 @@ func parseFile(s string) (Matrix, error) {
 	return m, nil
 }
 
-func (m Matrix) solve() {}
-
 func main() {
 
 	var data string
 
 	flag.Parse()
 	switch flag.NArg() {
+
+	/* Will read from STDIN in case of no argument */
 	case 0:
 		p, err := ioutil.ReadAll(os.Stdin)
 		if err != nil {
 			log.Fatal(err)
 		}
 		data = string(p)
+
+	/* Read from file */
 	case 1:
 		p, err := ioutil.ReadFile(os.Args[1])
 		if err != nil {
 			log.Fatal(err)
 		}
 		data = string(p)
+
+	/* Only accept one file */
 	default:
-		log.Fatalf("Please open a valid npz file or use the standard entry")
+		log.Fatalf("Please add a valid npz file or use the standard entry")
 	}
 
 	m, err := parseFile(data)
