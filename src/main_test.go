@@ -45,18 +45,18 @@ func TestParsing(t *testing.T) {
 	for _, it := range validMatrixTestCases {
 		res, err := parseFile(it.input)
 		if err != nil {
-			t.Fatalf("Valid input \"%v\", expected nil error, got: %v", it.input, err)
+			t.Errorf("Valid input \"%v\", expected nil error, got: %v", it.input, err)
 		}
 
 		if MatricesMatch(res, it.expected) == false {
-			t.Fatalf("Valid input \"%v\": got %v, wanted %v", it.input, res, it.expected)
+			t.Errorf("Valid input \"%v\": got %v, wanted %v", it.input, res, it.expected)
 		}
 	}
 
 	for _, it := range invalidMatrixTestCases {
 		res, _ := parseFile(it.input)
 		if res != nil {
-			t.Fatalf("Invalid input \"%v\", expected error, got: %v", it.input, res)
+			t.Errorf("Invalid input \"%v\", expected error, got: %v", it.input, res)
 		}
 	}
 }
