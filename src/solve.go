@@ -119,22 +119,23 @@ func (m Matrix) slide(direction Direction) Matrix {
 				var outOfBound bool
 				switch direction {
 				case Down:
-					outOfBound = y == len(m) - 1
+					outOfBound = y == len(m)-1
 				case Left:
 					outOfBound = x == 0
 				case Right:
-					outOfBound = x == len(m) - 1
+					outOfBound = x == len(m)-1
 				case Up:
 					outOfBound = y == 0
 				}
 
 				if outOfBound == true {
 					return nil
-				} else {
-					p.x = x
-					p.y = y
 				}
+
+				p.x = x
+				p.y = y
 			}
+
 			slid[y][x] = num
 		}
 	}
@@ -153,10 +154,18 @@ func (m Matrix) slide(direction Direction) Matrix {
 	return slid
 }
 
-func (m Matrix) solve() Matrix {
+func (m Matrix) solve() *Item {
 
 	openSet := make(PriorityQueue, 0)
 	heap.Init(&openSet)
+	endState := generateEndState(len(m))
+	startState := &Item{
+		m:        m,
+		cost:     0,
+		index:    0,
+		priority: manhattanDistance(m, endState),
+		parent:   nil,
+	}
 
-	return m
+	return startState
 }

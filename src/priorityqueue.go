@@ -3,19 +3,20 @@ package main
 import "container/heap"
 
 type Item struct {
-	m               Matrix
-	index, priority int
+	m                     Matrix
+	cost, index, priority int
+	parent                *Item
 }
 
 type PriorityQueue []*Item
 
-func (pq PriorityQueue) Len() int { return len(pq) }
-func (pq PriorityQueue) Less(i, j int) bool { return pq[i].priority > pq[j].priority }
-func (pq PriorityQueue) Swap(i, j int) {
+func (pq PriorityQueue) Len() int           { return len(pq) }
+func (pq PriorityQueue) Less(k, p int) bool { return pq[k].priority > pq[p].priority }
+func (pq PriorityQueue) Swap(k, p int) {
 
-	pq[i], pq[j] = pq[j], pq[i]
-	pq[i].index = i
-	pq[j].index = j
+	pq[k], pq[p] = pq[p], pq[k]
+	pq[k].index = k
+	pq[p].index = p
 }
 
 func (pq *PriorityQueue) Pop() interface{} {

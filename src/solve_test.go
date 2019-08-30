@@ -108,7 +108,7 @@ func TestHammingDistance(t *testing.T) {
 	for _, it := range hammingDistanceTestCases {
 		res := hammingDistance(it.m1, it.m2)
 		if res != it.expected {
-			t.Errorf("Entry %v and %v, got %v, expected %v", it.m1, it.m2 , res, it.expected)
+			t.Errorf("Entry %v and %v, got %v, expected %v", it.m1, it.m2, res, it.expected)
 		}
 	}
 }
@@ -118,7 +118,7 @@ func TestManhattanDistance(t *testing.T) {
 	for _, it := range manhattanDistanceTestCases {
 		res := manhattanDistance(it.m1, it.m2)
 		if res != it.expected {
-			t.Errorf("Entry %v and %v, got %v, expected %v", it.m1, it.m2 , res, it.expected)
+			t.Errorf("Entry %v and %v, got %v, expected %v", it.m1, it.m2, res, it.expected)
 		}
 	}
 }

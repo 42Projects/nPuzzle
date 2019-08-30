@@ -13,6 +13,9 @@ import (
 //Matrix is a 2d array representation
 type Matrix [][]int
 
+var matrixDisplayWidth int
+var itemDisplayWidth int
+
 func parseRow(line string, size int, checker *[]bool) ([]int, error) {
 
 	parsed, row, numbers := 0, make([]int, size), strings.Split(line, " ")
@@ -21,6 +24,11 @@ func parseRow(line string, size int, checker *[]bool) ([]int, error) {
 			continue
 		} else if number[0] == '#' {
 			break
+		}
+
+		/* Get rid of end of lines comments */
+		if index := strings.Index(number, "#"); index != -1 {
+			number = number[0 : index]
 		}
 
 		n, err := strconv.Atoi(number)
@@ -125,5 +133,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	m.solve()
+	/* Calculate width in pixels for our matrix display */
+	size := len(m)
+	itemDisplayWidth = len(strconv.Itoa(size * size - 1))
+	matrixDisplayWidth = itemDisplayWidth * size + size + 1
+
+	m.solve().displayPath()
 }
