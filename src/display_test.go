@@ -13,7 +13,7 @@ var stringTestCases = []struct {
 func TestString(t *testing.T) {
 
 	for _, it := range stringTestCases {
-		res := it.input.String()
+		res := it.input.string()
 		if res != it.expected {
 			t.Errorf("Entry %v, expected %#v, got %#v", it.input, it.expected, res)
 		}

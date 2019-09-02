@@ -7,18 +7,18 @@ import (
 	"strings"
 )
 
-func (it *Item) DisplayPath() {
+func (it *Item) displayPath() {
 
 	if it.parent != nil {
-		it.parent.DisplayPath()
+		it.parent.displayPath()
 		fmt.Printf("%v|\n", strings.Repeat(" ", matrixDisplayWidth/2))
 		fmt.Printf("%vv\n", strings.Repeat(" ", matrixDisplayWidth/2))
 	}
 
-	it.m.Display()
+	it.m.display()
 }
 
-func (m Matrix) Display() {
+func (m Matrix) display() {
 
 	var buff bytes.Buffer
 	buff.WriteString(fmt.Sprintf("%v\n", strings.Repeat("-", matrixDisplayWidth)))
@@ -44,7 +44,7 @@ func (m Matrix) Display() {
 	fmt.Println(buff.String())
 }
 
-func (m Matrix) String() string {
+func (m Matrix) string() string {
 
 	var buff bytes.Buffer
 	for k, row := range m {

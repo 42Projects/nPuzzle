@@ -12,32 +12,18 @@ type Item struct {
 	parent                *Item
 }
 
-func (it *Item) AddNeighboursToQueue(openSet *PriorityQueue, closedSet ClosedSet, endState Matrix) {
+func (it *Item) addNeighboursToQueue(openSet *PriorityQueue, closedSet ClosedSet, endState Matrix) {
 
-	for k := 0; k < 4; k++ {
-		var direction Direction
-		switch k {
-		case 0:
-			direction = Up
-		case 1:
-			direction = Down
-		case 2:
-			direction = Left
-		case 3:
-			direction = Right
-		}
-
-		if neighbour := it.m.Slide(direction); neighbour != nil && closedSet[neighbour.String()] == nil {
+	for _, direction := range []Direction{Up, Down, Left, Right} {
+		if neighbour := it.m.slide(direction); neighbour != nil && closedSet[neighbour.string()] == nil {
 			cost := it.cost + 1
 			priority := cost + heuristic(neighbour, endState)
-			if it.priority - priority + 2 >= 0 {
-				heap.Push(openSet, &Item{
-					m:        neighbour,
-					cost:     cost,
-					priority: priority,
-					parent:   it,
-				})
-			}
+			heap.Push(openSet, &Item{
+				m:        neighbour,
+				cost:     cost,
+				priority: priority,
+				parent:   it,
+			})
 		}
 	}
 }

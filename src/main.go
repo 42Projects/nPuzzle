@@ -17,6 +17,40 @@ type Matrix [][]int
 var matrixDisplayWidth int
 var itemDisplayWidth int
 
+func (m Matrix) isSolvable() bool {
+
+	size := len(m)
+	line := make([]int, size*size-1)
+	k := 0
+	for _, row := range m {
+		for _, num := range row {
+			if num != 0 {
+				line[k] = num
+				k++
+			}
+		}
+	}
+
+	inversion := 0
+	for k, num1 := range line {
+		for _, num2 := range line[k+1:] {
+			if num1 > num2 {
+				inversion++
+			}
+		}
+	}
+
+	/* If grid size is odd, the puzzle is only solvable if the number of inversion is odd as well */
+	if size%2 != 0 {
+		return inversion%2 != 0
+	}
+
+	/* Otherwise, we also need to check the blank tile position. */
+	blankTile := m.getTilePosition(0)
+
+	return (inversion%2 == 0 && blankTile.y%2 != 0) || (inversion%2 != 0 && blankTile.y%2 == 0)
+}
+
 func parseRow(line string, size int, checker *[]bool) ([]int, error) {
 
 	parsed, row, numbers := 0, make([]int, size), strings.Split(line, " ")
@@ -134,16 +168,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	/* Calculate width in pixels for our matrix Display */
+	if m.isSolvable() == false {
+		log.Fatal("unsolvable")
+	}
+
+	/* Calculate width in pixels for our matrix display */
 	size := len(m)
 	itemDisplayWidth = len(strconv.Itoa(size*size - 1))
 	matrixDisplayWidth = itemDisplayWidth*size + size + 1
 
-	res, err := m.Solve()
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	res := m.solve()
 	fmt.Printf("Solved with %v moves.\n", res.cost)
-	res.DisplayPath()
+	res.displayPath()
 }

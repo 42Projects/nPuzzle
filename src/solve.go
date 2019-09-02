@@ -2,7 +2,6 @@ package main
 
 import (
 	"container/heap"
-	"errors"
 	"math"
 )
 
@@ -89,7 +88,7 @@ func manhattanDistance(m1, m2 Matrix) (manhattanDistance int) {
 		for p, num := range row {
 			if num != 0 {
 				m1pos := Point{p, k}
-				m2pos := m2.GetTilePosition(num)
+				m2pos := m2.getTilePosition(num)
 				manhattanDistance += int(math.Abs(float64(m1pos.x-m2pos.x))) + int(math.Abs(float64(m1pos.y-m2pos.y)))
 			}
 		}
@@ -104,7 +103,7 @@ func heuristic(m1, m2 Matrix) int {
 	return f(m1, m2)
 }
 
-func (m Matrix) GetTilePosition(tile int) Point {
+func (m Matrix) getTilePosition(tile int) Point {
 
 	for y, row := range m {
 		for x, it := range row {
@@ -117,7 +116,7 @@ func (m Matrix) GetTilePosition(tile int) Point {
 	return Point{-1, -1}
 }
 
-func (m Matrix) Slide(direction Direction) Matrix {
+func (m Matrix) slide(direction Direction) Matrix {
 
 	slid := make(Matrix, len(m))
 	p := Point{}
@@ -163,31 +162,25 @@ func (m Matrix) Slide(direction Direction) Matrix {
 	return slid
 }
 
-func (m Matrix) Solve() (*Item, error) {
+func (m Matrix) solve() *Item {
 
 	closedSet := ClosedSet{}
 	openSet := make(PriorityQueue, 0)
 	heap.Init(&openSet)
 	endState := generateEndState(len(m))
-	startState := &Item{
+	current := &Item{
 		m:        m,
 		cost:     0,
 		priority: manhattanDistance(m, endState),
 		parent:   nil,
 	}
-	heap.Push(&openSet, startState)
+	heap.Push(&openSet, current)
 
-	for openSet.Len() > 0 {
-		topPriority := heap.Pop(&openSet).(*Item)
-		closedSet[topPriority.m.String()] = topPriority
-
-		/* Cost equals priority means heuristic value is zero, aka. goal is reached */
-		if topPriority.cost == topPriority.priority {
-			return topPriority, nil
-		}
-
-		topPriority.AddNeighboursToQueue(&openSet, closedSet, endState)
+	for openSet.Len() > 0 && current.cost != current.priority {
+		closedSet[current.m.string()] = current
+		current.addNeighboursToQueue(&openSet, closedSet, endState)
+		current = heap.Pop(&openSet).(*Item)
 	}
 
-	return nil, errors.New("unsolvable")
+	return current
 }

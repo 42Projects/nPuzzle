@@ -96,7 +96,7 @@ func TestGenerateEndState(t *testing.T) {
 func TestGetTilePosition(t *testing.T) {
 
 	for _, it := range getTilePositionTestCases {
-		res := it.input.GetTilePosition(it.tile)
+		res := it.input.getTilePosition(it.tile)
 		if PointsMatch(res, it.expected) == false {
 			t.Errorf("Tile %v entry %v, got %v, expected %v", it.tile, it.input, res, it.expected)
 		}
@@ -126,28 +126,28 @@ func TestManhattanDistance(t *testing.T) {
 func TestSlide(t *testing.T) {
 
 	for _, it := range slideDownTestCases {
-		res := it.input.Slide(Down)
+		res := it.input.slide(Down)
 		if MatricesMatch(res, it.expected) == false {
 			t.Errorf("SlideDown: entry %v, got %v, expected %v", it.input, res, it.expected)
 		}
 	}
 
 	for _, it := range slideLeftTestCases {
-		res := it.input.Slide(Left)
+		res := it.input.slide(Left)
 		if MatricesMatch(res, it.expected) == false {
 			t.Errorf("SlideDown: entry %v, got %v, expected %v", it.input, res, it.expected)
 		}
 	}
 
 	for _, it := range slideRightTestCases {
-		res := it.input.Slide(Right)
+		res := it.input.slide(Right)
 		if MatricesMatch(res, it.expected) == false {
 			t.Errorf("SlideDown: entry %v, got %v, expected %v", it.input, res, it.expected)
 		}
 	}
 
 	for _, it := range slideUpTestCases {
-		res := it.input.Slide(Up)
+		res := it.input.slide(Up)
 		if MatricesMatch(res, it.expected) == false {
 			t.Errorf("SlideUp: entry %v, got %v, expected %v", it.input, res, it.expected)
 		}
