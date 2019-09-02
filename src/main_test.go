@@ -1,8 +1,6 @@
 package main
 
-import (
-	"testing"
-)
+import "testing"
 
 var validMatrixTestCases = []struct {
 	input    string
@@ -22,41 +20,25 @@ var invalidMatrixTestCases = []struct {
 	3: {"1 2 3#comment"},
 }
 
-func MatricesMatch(m1, m2 Matrix) bool {
-
-	if len(m1) != len(m2) {
-		return false
-	}
-
-	for k, row := range m1 {
-		for p, it1 := range row {
-			it2 := m2[k][p]
-			if it1 != it2 {
-				return false
-			}
-		}
-	}
-
-	return true
-}
+func MatricesMatch(m1, m2 Matrix) bool { return hammingDistance(m1, m2) == 0 }
 
 func TestParsing(t *testing.T) {
 
 	for _, it := range validMatrixTestCases {
 		res, err := parseFile(it.input)
 		if err != nil {
-			t.Errorf("Valid input \"%v\", expected nil error, got: %v", it.input, err)
+			t.Errorf("Valid input %#v, expected nil error, got: %v", it.input, err)
 		}
 
 		if MatricesMatch(res, it.expected) == false {
-			t.Errorf("Valid input \"%v\": got %v, wanted %v", it.input, res, it.expected)
+			t.Errorf("Valid input %#v: got %v, wanted %v", it.input, res, it.expected)
 		}
 	}
 
 	for _, it := range invalidMatrixTestCases {
 		res, _ := parseFile(it.input)
 		if res != nil {
-			t.Errorf("Invalid input \"%v\", expected error, got: %v", it.input, res)
+			t.Errorf("Invalid input %#v, expected error, got: %v", it.input, res)
 		}
 	}
 }

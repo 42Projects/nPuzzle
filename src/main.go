@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -28,7 +29,7 @@ func parseRow(line string, size int, checker *[]bool) ([]int, error) {
 
 		/* Get rid of end of lines comments */
 		if index := strings.Index(number, "#"); index != -1 {
-			number = number[0 : index]
+			number = number[0:index]
 		}
 
 		n, err := strconv.Atoi(number)
@@ -51,7 +52,7 @@ func parseRow(line string, size int, checker *[]bool) ([]int, error) {
 			row[parsed] = n
 		}
 
-		parsed += 1
+		parsed++
 	}
 
 	if parsed != size {
@@ -93,7 +94,7 @@ func parseFile(s string) (Matrix, error) {
 				return nil, err
 			}
 			m[k] = row
-			k += 1
+			k++
 		}
 	}
 
@@ -133,10 +134,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	/* Calculate width in pixels for our matrix display */
+	/* Calculate width in pixels for our matrix Display */
 	size := len(m)
-	itemDisplayWidth = len(strconv.Itoa(size * size - 1))
-	matrixDisplayWidth = itemDisplayWidth * size + size + 1
+	itemDisplayWidth = len(strconv.Itoa(size*size - 1))
+	matrixDisplayWidth = itemDisplayWidth*size + size + 1
 
-	m.solve().displayPath()
+	res, err := m.Solve()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Solved with %v moves.\n", res.cost)
+	res.DisplayPath()
 }

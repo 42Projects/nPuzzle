@@ -2,16 +2,19 @@ package main
 
 import (
 	"container/heap"
+	"errors"
 	"math"
 )
 
+//Direction represents cardinal points
 type Direction int
 
-//Point represent a point in a 2D plane, x is the abscissa, y the ordinate
+//Point represents a point in a 2D plane, x is the abscissa, y the ordinate
 type Point struct {
 	x, y int
 }
 
+//Directions
 const (
 	_ Direction = iota
 	Down
@@ -34,30 +37,30 @@ func generateEndState(size int) Matrix {
 		case Down:
 			if y == size-1 || m[y+1][x] != 0 {
 				direction = Left
-				x -= 1
+				x--
 			} else {
-				y += 1
+				y++
 			}
 		case Left:
 			if x == 0 || m[y][x-1] != 0 {
 				direction = Up
-				y -= 1
+				y--
 			} else {
-				x -= 1
+				x--
 			}
 		case Right:
 			if x == size-1 || m[y][x+1] != 0 {
 				direction = Down
-				y += 1
+				y++
 			} else {
-				x += 1
+				x++
 			}
 		case Up:
 			if y == 0 || m[y-1][x] != 0 {
 				direction = Right
-				x += 1
+				x++
 			} else {
-				y -= 1
+				y--
 			}
 		}
 	}
@@ -71,7 +74,7 @@ func hammingDistance(m1, m2 Matrix) (hammingDistance int) {
 	for k, row := range m1 {
 		for p, num := range row {
 			if num != 0 && num != m2[k][p] {
-				hammingDistance += 1
+				hammingDistance++
 			}
 		}
 	}
@@ -86,7 +89,7 @@ func manhattanDistance(m1, m2 Matrix) (manhattanDistance int) {
 		for p, num := range row {
 			if num != 0 {
 				m1pos := Point{p, k}
-				m2pos := m2.getTilePosition(num)
+				m2pos := m2.GetTilePosition(num)
 				manhattanDistance += int(math.Abs(float64(m1pos.x-m2pos.x))) + int(math.Abs(float64(m1pos.y-m2pos.y)))
 			}
 		}
@@ -95,7 +98,13 @@ func manhattanDistance(m1, m2 Matrix) (manhattanDistance int) {
 	return
 }
 
-func (m Matrix) getTilePosition(tile int) Point {
+func heuristic(m1, m2 Matrix) int {
+
+	f := manhattanDistance
+	return f(m1, m2)
+}
+
+func (m Matrix) GetTilePosition(tile int) Point {
 
 	for y, row := range m {
 		for x, it := range row {
@@ -108,7 +117,7 @@ func (m Matrix) getTilePosition(tile int) Point {
 	return Point{-1, -1}
 }
 
-func (m Matrix) slide(direction Direction) Matrix {
+func (m Matrix) Slide(direction Direction) Matrix {
 
 	slid := make(Matrix, len(m))
 	p := Point{}
@@ -154,18 +163,31 @@ func (m Matrix) slide(direction Direction) Matrix {
 	return slid
 }
 
-func (m Matrix) solve() *Item {
+func (m Matrix) Solve() (*Item, error) {
 
+	closedSet := ClosedSet{}
 	openSet := make(PriorityQueue, 0)
 	heap.Init(&openSet)
 	endState := generateEndState(len(m))
 	startState := &Item{
 		m:        m,
 		cost:     0,
-		index:    0,
 		priority: manhattanDistance(m, endState),
 		parent:   nil,
 	}
+	heap.Push(&openSet, startState)
 
-	return startState
+	for openSet.Len() > 0 {
+		topPriority := heap.Pop(&openSet).(*Item)
+		closedSet[topPriority.m.String()] = topPriority
+
+		/* Cost equals priority means heuristic value is zero, aka. goal is reached */
+		if topPriority.cost == topPriority.priority {
+			return topPriority, nil
+		}
+
+		topPriority.AddNeighboursToQueue(&openSet, closedSet, endState)
+	}
+
+	return nil, errors.New("unsolvable")
 }

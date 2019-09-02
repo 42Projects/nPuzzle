@@ -3,22 +3,22 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
-func (it *Item) displayPath() {
+func (it *Item) DisplayPath() {
 
 	if it.parent != nil {
-		it.parent.displayPath()
-		fmt.Printf("%v|\n", strings.Repeat(" ", matrixDisplayWidth/ 2))
-		fmt.Printf("%vv\n", strings.Repeat(" ", matrixDisplayWidth/ 2))
+		it.parent.DisplayPath()
+		fmt.Printf("%v|\n", strings.Repeat(" ", matrixDisplayWidth/2))
+		fmt.Printf("%vv\n", strings.Repeat(" ", matrixDisplayWidth/2))
 	}
 
-	display := it.m.display()
-	fmt.Println(display.String())
+	it.m.Display()
 }
 
-func (m Matrix) display() bytes.Buffer {
+func (m Matrix) Display() {
 
 	var buff bytes.Buffer
 	buff.WriteString(fmt.Sprintf("%v\n", strings.Repeat("-", matrixDisplayWidth)))
@@ -41,5 +41,25 @@ func (m Matrix) display() bytes.Buffer {
 	}
 
 	buff.WriteString(strings.Repeat("-", matrixDisplayWidth))
-	return buff
+	fmt.Println(buff.String())
+}
+
+func (m Matrix) String() string {
+
+	var buff bytes.Buffer
+	for k, row := range m {
+		if k != 0 {
+			buff.WriteByte('\n')
+		}
+
+		for p, num := range row {
+			if p != 0 {
+				buff.WriteByte(' ')
+			}
+
+			buff.WriteString(strconv.Itoa(num))
+		}
+	}
+
+	return buff.String()
 }

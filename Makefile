@@ -1,15 +1,31 @@
-NAME := nPuzzle
+# Go parameters
+GOCMD :=	go
+GOBUILD :=	$(GOCMD) build
+GOCLEAN :=	$(GOCMD) clean
+GOGET :=	$(GOCMD) get
+GOTEST :=	$(GOCMD) test
 
-all: $(NAME)
+# Binary parameters
+BINDIR :=	./bin/
+BINNAME :=	nPuzzle
 
-$(NAME):
-	@mkdir -p /bin/
-	@go build -o ./bin/nPuzzle ./src/*.go
+# Sources
+SRCDIR	:=	./src/
+
+# Rules
+all: test build
+
+build: | $(BINDIR)
+	@$(GOBUILD) -o $(BINDIR)$(BINNAME) -v $(SRCDIR)*
+
+$(BINDIR):
+	@mkdir -p $@
 
 clean:
-	@/bin/rm -rf ./bin/
+	@$(GOCLEAN)
+	@/bin/rm -rf $(BINDIR)
 
 test:
-	@go test ./...
+	@$(GOTEST) -v ./...
 
 .PHONY: all clean test
