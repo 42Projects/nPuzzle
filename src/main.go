@@ -19,40 +19,6 @@ var itemDisplayWidth int
 var h = flag.String("heuristic", "manhattan", "choose between available heuristics: hamming and manhattan")
 var s = flag.String("search", "uniform", "choose between uniform-cost search and greedy search")
 
-func isSolvable(m Matrix) bool {
-
-	size := len(m)
-	line := make([]int, size*size-1)
-	k := 0
-	for _, row := range m {
-		for _, num := range row {
-			if num != 0 {
-				line[k] = num
-				k++
-			}
-		}
-	}
-
-	inversion := 0
-	for k, num1 := range line {
-		for _, num2 := range line[k+1:] {
-			if num1 > num2 {
-				inversion++
-			}
-		}
-	}
-
-	/* If grid size is odd, the puzzle is only solvable if the number of inversion is odd as well */
-	if size%2 != 0 {
-		return inversion%2 != 0
-	}
-
-	/* Otherwise, we also need to check the blank tile position. */
-	blankTile := m.getTilePosition(0)
-
-	return (inversion%2 != 0 && blankTile.y%2 == 0) || (inversion%2 == 0 && blankTile.y%2 != 0)
-}
-
 func parseRow(line string, size int, checker *[]bool) ([]int, error) {
 
 	parsed, row, numbers := 0, make([]int, size), strings.Split(line, " ")
