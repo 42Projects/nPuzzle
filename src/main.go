@@ -48,7 +48,7 @@ func (m Matrix) isSolvable() bool {
 	/* Otherwise, we also need to check the blank tile position. */
 	blankTile := m.getTilePosition(0)
 
-	return (inversion%2 == 0 && blankTile.y%2 != 0) || (inversion%2 != 0 && blankTile.y%2 == 0)
+	return (inversion%2 != 0 && blankTile.y%2 == 0) || (inversion%2 == 0 && blankTile.y%2 != 0)
 }
 
 func parseRow(line string, size int, checker *[]bool) ([]int, error) {
@@ -177,7 +177,10 @@ func main() {
 	itemDisplayWidth = len(strconv.Itoa(size*size - 1))
 	matrixDisplayWidth = itemDisplayWidth*size + size + 1
 
-	res := m.solve()
-	fmt.Printf("Solved with %v moves.\n", res.cost)
+	res, totalNumberOfStates, maxNumberOfStates := m.solve()
+	fmt.Printf("- total number of states selected: %v\n", totalNumberOfStates)
+	fmt.Printf("- maximum number of states in memory: %v\n", maxNumberOfStates)
+	fmt.Printf("- number of moves: %v\n", res.cost)
+	fmt.Printf("- path:\n")
 	res.displayPath()
 }

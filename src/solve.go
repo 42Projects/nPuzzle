@@ -162,7 +162,7 @@ func (m Matrix) slide(direction Direction) Matrix {
 	return slid
 }
 
-func (m Matrix) solve() *Item {
+func (m Matrix) solve() (*Item, int, int) {
 
 	closedSet := ClosedSet{}
 	openSet := make(PriorityQueue, 0)
@@ -176,11 +176,18 @@ func (m Matrix) solve() *Item {
 	}
 	heap.Push(&openSet, current)
 
+	totalNumberOfStates := 1
+	maxNumberOfStates := 1
 	for openSet.Len() > 0 && current.cost != current.priority {
 		closedSet[current.m.string()] = current
 		current.addNeighboursToQueue(&openSet, closedSet, endState)
+		if size := openSet.Len(); size > maxNumberOfStates {
+			maxNumberOfStates = size
+		}
+
 		current = heap.Pop(&openSet).(*Item)
+		totalNumberOfStates++
 	}
 
-	return current
+	return current, totalNumberOfStates, maxNumberOfStates
 }
