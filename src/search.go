@@ -5,14 +5,14 @@ import (
 	"math"
 )
 
+//Search represents the function that search for the most promising moves (or "neighbours")
+type Search func(*Item, Heuristic, *OpenSet, ClosedSet, Matrix)
+
 //Neighbour is a simple struct containing one neighbour and his heuristic score, only used for greedy search
 type Neighbour struct {
 	m     Matrix
 	score int
 }
-
-//Search represents the function that search for the most promising moves (or "neighbours")
-type Search func(*Item, Heuristic, *OpenSet, ClosedSet, Matrix)
 
 func greedySearch(current *Item, heuristic Heuristic, openSet *OpenSet, closedSet ClosedSet, endState Matrix) {
 

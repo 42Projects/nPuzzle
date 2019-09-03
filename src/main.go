@@ -16,8 +16,8 @@ var matrixDisplayWidth int
 var itemDisplayWidth int
 
 //Flags
-var h = flag.String("heuristic", "manhattan", "choose between available heuristics: hamming and manhattan")
-var s = flag.String("search", "uniform", "choose between uniform-cost search and greedy search")
+var h = flag.String("heuristic", "manhattan + linear conflicts", "choose between available heuristics: [\"hamming\", \"manhattan\", \"manhattan + linear conflicts\"]")
+var s = flag.String("search", "uniform-cost", "choose between [\"uniform-cost\", \"greedy\"]")
 
 func parseRow(line string, size int, checker *[]bool) ([]int, error) {
 
@@ -112,9 +112,13 @@ func main() {
 	switch *h {
 	case "hamming":
 		heuristic = hammingDistance
-	default:
-		*h = "manhattan"
+	case "manhattan":
 		heuristic = manhattanDistance
+	case "manhattan + linear conflicts":
+		heuristic = manhattanPlusLinearConflicts
+	default:
+		log.Fatalf("error: %#v isn't recognized as a valid heuristic function\nAvailable heuristics are:\n"+
+			" - hamming\n - manhattan\n - manhattan + linear conflicts (default)\n", *h)
 	}
 
 	/* Choose between greedy search and uniform-cost search */
@@ -122,9 +126,11 @@ func main() {
 	switch *s {
 	case "greedy":
 		search = greedySearch
-	default:
-		*s = "uniform-cost"
+	case "uniform-cost":
 		search = uniformCostSearch
+	default:
+		log.Fatalf("error: %#v isn't recognized as a valid search option\nAvailable search options are:\n"+
+			" - greedy\n - uniform-cost (default)", *s)
 	}
 
 	var data string
@@ -148,7 +154,7 @@ func main() {
 
 	/* Only accept one file */
 	default:
-		log.Fatalf("Please add a single valid npz file or use the standard entry")
+		log.Fatalf("please add a single valid npz file or use the standard entry")
 	}
 
 	m, err := parseFile(data)
