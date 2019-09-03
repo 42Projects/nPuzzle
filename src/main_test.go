@@ -20,7 +20,7 @@ var invalidMatrixTestCases = []struct {
 	3: {"1 2 3#comment"},
 }
 
-func MatricesMatch(m1, m2 Matrix) bool { return hammingDistance(m1, m2) == 0 }
+func matricesMatch(m1, m2 Matrix) bool { return hammingDistance(m1, m2) == 0 }
 
 func TestParsing(t *testing.T) {
 
@@ -30,7 +30,7 @@ func TestParsing(t *testing.T) {
 			t.Errorf("Valid input %#v, expected nil error, got: %v", it.input, err)
 		}
 
-		if MatricesMatch(res, it.expected) == false {
+		if matricesMatch(res, it.expected) == false {
 			t.Errorf("Valid input %#v: got %v, wanted %v", it.input, res, it.expected)
 		}
 	}

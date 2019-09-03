@@ -44,6 +44,7 @@ func (m Matrix) display() {
 	fmt.Println(buff.String())
 }
 
+//Add a string representation to our matrix so we can hash it for the closed set
 func (m Matrix) string() string {
 
 	var buff bytes.Buffer

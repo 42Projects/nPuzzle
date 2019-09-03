@@ -11,13 +11,15 @@ import (
 	"strings"
 )
 
-//Matrix is a 2d array representation
-type Matrix [][]int
-
+//Variables for command-line display
 var matrixDisplayWidth int
 var itemDisplayWidth int
 
-func (m Matrix) isSolvable() bool {
+//Flags
+var h = flag.String("h", "manhattan", "choose between available heuristics: hamming and manhattan")
+var s = flag.String("search", "uniform", "choose between uniform-cost search and greedy search")
+
+func isSolvable(m Matrix) bool {
 
 	size := len(m)
 	line := make([]int, size*size-1)
@@ -137,9 +139,26 @@ func parseFile(s string) (Matrix, error) {
 
 func main() {
 
-	var data string
-
 	flag.Parse()
+
+	/* Choose heuristic function */
+	var heuristic Heuristic
+	switch *h {
+	case "hamming":
+		heuristic = hammingDistance
+	default:
+		*h = "manhattan"
+		heuristic = manhattanDistance
+	}
+
+	/* Choose between greedy search and uniform-cost search */
+	switch *s {
+	case "greedy":
+	default:
+		*s = "uniform-cost"
+	}
+
+	var data string
 	switch flag.NArg() {
 
 	/* Will read from STDIN in case of no argument */
@@ -152,7 +171,7 @@ func main() {
 
 	/* Read from file */
 	case 1:
-		p, err := ioutil.ReadFile(os.Args[1])
+		p, err := ioutil.ReadFile(flag.Arg(0))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -160,7 +179,7 @@ func main() {
 
 	/* Only accept one file */
 	default:
-		log.Fatalf("Please add a valid npz file or use the standard entry")
+		log.Fatalf("Please add a single valid npz file or use the standard entry")
 	}
 
 	m, err := parseFile(data)
@@ -168,7 +187,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if m.isSolvable() == false {
+	if isSolvable(m) == false {
 		log.Fatal("unsolvable")
 	}
 
@@ -177,7 +196,10 @@ func main() {
 	itemDisplayWidth = len(strconv.Itoa(size*size - 1))
 	matrixDisplayWidth = itemDisplayWidth*size + size + 1
 
-	res, totalNumberOfStates, maxNumberOfStates := m.solve()
+	res, totalNumberOfStates, maxNumberOfStates := m.solve(heuristic)
+	fmt.Printf("\n -------------- SOLVED! ---------------\n")
+	fmt.Printf("- heuristic used: %v\n", *h)
+	fmt.Printf("- search: %v\n", *s)
 	fmt.Printf("- total number of states selected: %v\n", totalNumberOfStates)
 	fmt.Printf("- maximum number of states in memory: %v\n", maxNumberOfStates)
 	fmt.Printf("- number of moves: %v\n", res.cost)

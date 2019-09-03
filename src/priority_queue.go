@@ -12,57 +12,41 @@ type Item struct {
 	parent                *Item
 }
 
-func (it *Item) addNeighboursToQueue(openSet *PriorityQueue, closedSet ClosedSet, endState Matrix) {
+//OpenSet is implemented using a priority queue with the help of the heap interface
+type OpenSet []*Item
 
-	for _, direction := range []Direction{Up, Down, Left, Right} {
-		if neighbour := it.m.slide(direction); neighbour != nil && closedSet[neighbour.string()] == nil {
-			cost := it.cost + 1
-			priority := cost + heuristic(neighbour, endState)
-			heap.Push(openSet, &Item{
-				m:        neighbour,
-				cost:     cost,
-				priority: priority,
-				parent:   it,
-			})
-		}
-	}
+func (os OpenSet) Len() int           { return len(os) }
+func (os OpenSet) Less(k, p int) bool { return os[k].priority < os[p].priority }
+func (os OpenSet) Swap(k, p int) {
+
+	os[k], os[p] = os[p], os[k]
+	os[k].index = k
+	os[p].index = p
 }
 
-//PriorityQueue is implemented using heap interface
-type PriorityQueue []*Item
+//Pop removes last item from the priority queue
+func (os *OpenSet) Pop() interface{} {
 
-func (pq PriorityQueue) Len() int           { return len(pq) }
-func (pq PriorityQueue) Less(k, p int) bool { return pq[k].priority < pq[p].priority }
-func (pq PriorityQueue) Swap(k, p int) {
-
-	pq[k], pq[p] = pq[p], pq[k]
-	pq[k].index = k
-	pq[p].index = p
-}
-
-//Pop removes last item from the priorityQueue
-func (pq *PriorityQueue) Pop() interface{} {
-
-	old := *pq
+	old := *os
 	n := len(old)
 	item := old[n-1]
 	item.index = -1
-	*pq = old[0 : n-1]
+	*os = old[0 : n-1]
 	return item
 }
 
-//Push insert an item into the priorityQueue, priority is handled under the hood by the heap interface
-func (pq *PriorityQueue) Push(x interface{}) {
+//Push insert an item into the priority queue, priority is handled under the hood by the heap interface
+func (os *OpenSet) Push(x interface{}) {
 
-	n := len(*pq)
+	n := len(*os)
 	item := x.(*Item)
 	item.index = n
-	*pq = append(*pq, item)
+	*os = append(*os, item)
 }
 
-//Remove removes an item from the priorityQueue based on it's index
-func (pq *PriorityQueue) Remove(x interface{}) {
+//Remove removes an item from the priority queue based on it's index
+func (os *OpenSet) Remove(x interface{}) {
 
 	index := x.(*Item).index
-	heap.Remove(pq, index)
+	heap.Remove(os, index)
 }
