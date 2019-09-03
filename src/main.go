@@ -16,7 +16,7 @@ var matrixDisplayWidth int
 var itemDisplayWidth int
 
 //Flags
-var h = flag.String("h", "manhattan", "choose between available heuristics: hamming and manhattan")
+var h = flag.String("heuristic", "manhattan", "choose between available heuristics: hamming and manhattan")
 var s = flag.String("search", "uniform", "choose between uniform-cost search and greedy search")
 
 func isSolvable(m Matrix) bool {
@@ -152,10 +152,13 @@ func main() {
 	}
 
 	/* Choose between greedy search and uniform-cost search */
+	var search Search
 	switch *s {
 	case "greedy":
+		search = greedySearch
 	default:
 		*s = "uniform-cost"
+		search = uniformCostSearch
 	}
 
 	var data string
@@ -196,7 +199,7 @@ func main() {
 	itemDisplayWidth = len(strconv.Itoa(size*size - 1))
 	matrixDisplayWidth = itemDisplayWidth*size + size + 1
 
-	res, totalNumberOfStates, maxNumberOfStates := m.solve(heuristic)
+	res, totalNumberOfStates, maxNumberOfStates := m.solve(heuristic, search)
 	fmt.Printf("\n -------------- SOLVED! ---------------\n")
 	fmt.Printf("- heuristic used: %v\n", *h)
 	fmt.Printf("- search: %v\n", *s)

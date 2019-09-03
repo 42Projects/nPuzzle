@@ -128,10 +128,10 @@ func generateEndState(size int) Matrix {
 
 func goalReached(cost, priority int) bool {
 
-	return priority == cost
+	return (*s == "greedy" && priority == 0) || (*s == "uniform-cost" && cost == priority)
 }
 
-func (m Matrix) solve(heuristic Heuristic) (*Item, int, int) {
+func (m Matrix) solve(heuristic Heuristic, search Search) (*Item, int, int) {
 
 	closedSet := ClosedSet{}
 	openSet := make(OpenSet, 0)
@@ -149,22 +149,8 @@ func (m Matrix) solve(heuristic Heuristic) (*Item, int, int) {
 	maxNumberOfStates := 1
 	for openSet.Len() > 0 && goalReached(current.cost, current.priority) == false {
 
-		/* Get our top priority state */
 		closedSet[current.m.string()] = current
-
-		/* Add neighbours to the priority queue */
-		for _, direction := range []Direction{Up, Down, Left, Right} {
-			if neighbour := current.m.slide(direction); neighbour != nil && closedSet[neighbour.string()] == nil {
-				cost := current.cost + 1
-				priority := cost + heuristic(neighbour, endState)
-				heap.Push(&openSet, &Item{
-					m:        neighbour,
-					cost:     cost,
-					priority: priority,
-					parent:   current,
-				})
-			}
-		}
+		search(current, heuristic, &openSet, closedSet, endState)
 
 		/* We keep track of memory complexity */
 		if size := openSet.Len(); size > maxNumberOfStates {
