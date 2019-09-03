@@ -7,7 +7,7 @@ GOTEST :=	$(GOCMD) test
 
 # Binary parameters
 BINDIR :=	./bin/
-BINNAME :=	nPuzzle
+BINNAME :=	nPuzzleSolver
 
 # Sources
 SRCDIR	:=	./src/
@@ -20,6 +20,9 @@ build: | $(BINDIR)
 
 $(BINDIR):
 	@mkdir -p $@
+
+benchmark:
+	@$(GOTEST) -bench=. -v ./...
 
 clean:
 	@$(GOCLEAN)

@@ -130,3 +130,19 @@ func TestString(t *testing.T) {
 		}
 	}
 }
+
+var result *Item
+
+func BenchmarkSolve(b *testing.B) {
+
+	var r *Item
+
+	/* A good old annoying 4x4 matrix */
+	m := Matrix{{5, 3, 7, 13}, {12, 6, 11, 15}, {2, 4, 8, 0}, {14, 9, 10, 1}}
+
+	for k := 0; k < b.N; k++ {
+		r, _, _ = m.solve(manhattanPlusLinearConflicts, uniformCostSearch)
+	}
+
+	result = r
+}

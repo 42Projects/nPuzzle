@@ -95,5 +95,5 @@ func manhattanDistance(m1, m2 Matrix) (manhattanDistance int) {
 //Cumulate manhattan distance heuristic with the cost of linear conflicts (which adds at least 2 moves to the solution)
 func manhattanPlusLinearConflicts(m1, m2 Matrix) (distance int) {
 
-	return manhattanDistance(m1, m2) + 2*linearConflicts(m1, m2)
+	return manhattanDistance(m1, m2) + 2 * linearConflicts(m1, m2)
 }
