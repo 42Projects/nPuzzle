@@ -1,4 +1,4 @@
 #What's left to be done
-- Implement server and client
+- Implement client
 - Add VueJS front
 - Dockerize everything

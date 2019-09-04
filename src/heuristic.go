@@ -1,4 +1,4 @@
-package main
+package npuzzle
 
 import "math"
 
@@ -6,7 +6,7 @@ import "math"
 type Heuristic func(Matrix, Matrix) int
 
 //HammingDistance add one move for each tile not in place, it's a pretty weak heuristic
-func hammingDistance(m1, m2 Matrix) (hammingDistance int) {
+func HammingDistance(m1, m2 Matrix) (hammingDistance int) {
 
 	hammingDistance = 0
 	for k, row := range m1 {
@@ -76,7 +76,7 @@ func linearConflicts(m1, m2 Matrix) (linearConflict int) {
 }
 
 //ManhattanDistance accounts for the distance for each tile to reach it's desired position
-func manhattanDistance(m1, m2 Matrix) (manhattanDistance int) {
+func ManhattanDistance(m1, m2 Matrix) (manhattanDistance int) {
 
 	manhattanDistance = 0
 	for k, row := range m1 {
@@ -92,8 +92,8 @@ func manhattanDistance(m1, m2 Matrix) (manhattanDistance int) {
 	return
 }
 
-//Cumulate manhattan distance heuristic with the cost of linear conflicts (which adds at least 2 moves to the solution)
-func manhattanPlusLinearConflicts(m1, m2 Matrix) (distance int) {
+//ManhattanPlusLinearConflicts cumulates manhattan distance heuristic with the cost of linear conflicts
+func ManhattanPlusLinearConflicts(m1, m2 Matrix) (distance int) {
 
-	return manhattanDistance(m1, m2) + 2 * linearConflicts(m1, m2)
+	return ManhattanDistance(m1, m2) + 2*linearConflicts(m1, m2)
 }

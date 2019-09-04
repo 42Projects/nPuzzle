@@ -1,4 +1,4 @@
-package main
+package npuzzle
 
 import "testing"
 
@@ -17,7 +17,7 @@ var isSolvableTestCases = []struct {
 func TestIsSolvable(t *testing.T) {
 
 	for _, it := range isSolvableTestCases {
-		res := isSolvable(it.input)
+		res := IsSolvable(it.input)
 		if res != it.expected {
 			t.Errorf("Entry %v, expected %v, got %v", it.input, it.expected, res)
 		}

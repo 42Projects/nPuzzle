@@ -1,4 +1,4 @@
-package main
+package npuzzle
 
 import "container/heap"
 
@@ -7,9 +7,9 @@ type ClosedSet map[string]*Item
 
 //Item is our data structure for the priorityQueue
 type Item struct {
-	m                     Matrix
-	cost, index, priority int
-	parent                *Item
+	M                     Matrix
+	Cost, index, priority int
+	Parent                *Item
 }
 
 //OpenSet is implemented using a priority queue with the help of the heap interface

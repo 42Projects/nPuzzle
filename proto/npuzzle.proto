@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package npuzzle;
+
+service Greeter {
+    rpc Greets (Handshake) returns (Handshake) {}
+    rpc Solve (Problem) returns (Empty) {}
+}
+
+message Empty {}
+
+message Handshake {
+    string message = 1;
+}
+
+message Problem {
+    string heuristic = 1;
+    string search = 2;
+    string matrix = 3;
+}

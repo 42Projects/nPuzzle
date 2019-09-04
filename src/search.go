@@ -1,4 +1,4 @@
-package main
+package npuzzle
 
 import (
 	"container/heap"
@@ -14,15 +14,16 @@ type Neighbour struct {
 	score int
 }
 
-func greedySearch(current *Item, heuristic Heuristic, openSet *OpenSet, closedSet ClosedSet, endState Matrix) {
+//GreedySearch targets the shortest path from each node disregarding everything else
+func GreedySearch(current *Item, heuristic Heuristic, openSet *OpenSet, closedSet ClosedSet, endState Matrix) {
 
 	bestScore := math.MaxInt32
-	cost := current.cost + 1
+	cost := current.Cost + 1
 	var neighbours []Neighbour
 
 	/* Only keep the most promising neighbours */
 	for _, direction := range []Direction{Up, Down, Left, Right} {
-		if neighbour := current.m.slide(direction); neighbour != nil && closedSet[neighbour.string()] == nil {
+		if neighbour := current.M.slide(direction); neighbour != nil && closedSet[neighbour.string()] == nil {
 			score := heuristic(neighbour, endState)
 			neighbours = append(neighbours, Neighbour{
 				m:     neighbour,
@@ -37,27 +38,28 @@ func greedySearch(current *Item, heuristic Heuristic, openSet *OpenSet, closedSe
 	for _, it := range neighbours {
 		if it.score == bestScore {
 			heap.Push(openSet, &Item{
-				m:        it.m,
-				cost:     cost,
+				M:        it.m,
+				Cost:     cost,
 				priority: bestScore,
-				parent:   current,
+				Parent:   current,
 			})
 		}
 	}
 }
 
-func uniformCostSearch(current *Item, heuristic Heuristic, openSet *OpenSet, closedSet ClosedSet, endState Matrix) {
+//UniformCostSearch considers every path but will prioritize the one with the lesser overall cost
+func UniformCostSearch(current *Item, heuristic Heuristic, openSet *OpenSet, closedSet ClosedSet, endState Matrix) {
 
 	/* Add all neighbours to the priority queue, best will be explored first */
 	for _, direction := range []Direction{Up, Down, Left, Right} {
-		if neighbour := current.m.slide(direction); neighbour != nil && closedSet[neighbour.string()] == nil {
-			cost := current.cost + 1
+		if neighbour := current.M.slide(direction); neighbour != nil && closedSet[neighbour.string()] == nil {
+			cost := current.Cost + 1
 			priority := cost + heuristic(neighbour, endState)
 			heap.Push(openSet, &Item{
-				m:        neighbour,
-				cost:     cost,
+				M:        neighbour,
+				Cost:     cost,
 				priority: priority,
-				parent:   current,
+				Parent:   current,
 			})
 		}
 	}

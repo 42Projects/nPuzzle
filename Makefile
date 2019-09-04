@@ -1,34 +1,43 @@
 # Go parameters
-GOCMD :=	go
-GOBUILD :=	$(GOCMD) build
-GOCLEAN :=	$(GOCMD) clean
-GOGET :=	$(GOCMD) get
-GOTEST :=	$(GOCMD) test
+GOCMD :=		go
+GOBUILD :=		$(GOCMD) build
+GOCLEAN :=		$(GOCMD) clean
+GOGET :=		$(GOCMD) get
+GOTEST :=		$(GOCMD) test
 
 # Binary parameters
-BINDIR :=	./bin/
-BINNAME :=	nPuzzleSolver
+BINDIR :=		./bin/
+CLINAME :=		nPuzzleCli
+SERVERNAME :=	nPuzzleServer
 
 # Sources
-SRCDIR	:=	./src/
+CLIDIR :=		./cli/
+SERVERDIR :=	./server/
+SRCDIR :=		./src/
 
 # Rules
 all: test build
 
-build: | $(BINDIR)
-	@$(GOBUILD) -o $(BINDIR)$(BINNAME) -v $(SRCDIR)*
-
 $(BINDIR):
 	@mkdir -p $@
 
-benchmark:
-	@$(GOTEST) -bench=. -v ./...
+build: cli server
 
 clean:
 	@$(GOCLEAN)
 	@/bin/rm -rf $(BINDIR)
 
-test:
-	@$(GOTEST) -v ./...
+cli: | $(BINDIR)
+	@printf "Compiling cli..."
+	@$(GOBUILD) -o $(BINDIR)$(CLINAME) $(CLIDIR)*
+	@printf " done\n"
 
-.PHONY: all clean test
+server: | $(BINDIR)
+	@printf "Compiling server..."
+	@$(GOBUILD) -o $(BINDIR)$(SERVERNAME) $(SERVERDIR)*
+	@printf " done\n"
+
+test:
+	@$(GOTEST) -v $(SRCDIR)
+
+.PHONY: all build clean cli server test
