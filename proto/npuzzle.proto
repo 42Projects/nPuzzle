@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package npuzzle;
 
-service Greeter {
+service Npuzzle {
     rpc Greets (Handshake) returns (Handshake) {}
     rpc Solve (Problem) returns (Empty) {}
 }

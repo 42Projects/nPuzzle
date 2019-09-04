@@ -158,7 +158,7 @@ func init() {
 func init() { proto.RegisterFile("npuzzle.proto", fileDescriptor_a4181303827119de) }
 
 var fileDescriptor_a4181303827119de = []byte{
-	// 200 bytes of a gzipped FileDescriptorProto
+	// 199 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcd, 0x2b, 0x28, 0xad,
 	0xaa, 0xca, 0x49, 0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x87, 0x72, 0x95, 0xd8, 0xb9,
 	0x58, 0x5d, 0x73, 0x0b, 0x4a, 0x2a, 0x95, 0x54, 0xb9, 0x38, 0x3d, 0x12, 0xf3, 0x52, 0x8a, 0x33,
@@ -167,11 +167,11 @@ var fileDescriptor_a4181303827119de = []byte{
 	0xd4, 0x5c, 0x21, 0x19, 0x2e, 0xce, 0x8c, 0xd4, 0xd2, 0xa2, 0xcc, 0xe2, 0x92, 0xcc, 0x64, 0xa8,
 	0x32, 0x84, 0x80, 0x90, 0x18, 0x17, 0x5b, 0x71, 0x6a, 0x62, 0x51, 0x72, 0x86, 0x04, 0x13, 0x58,
 	0x0a, 0xca, 0x03, 0x89, 0xe7, 0x26, 0x96, 0x14, 0x65, 0x56, 0x48, 0x30, 0x43, 0xc4, 0x21, 0x3c,
-	0xa3, 0x2c, 0x2e, 0x76, 0xf7, 0xa2, 0xd4, 0xd4, 0x92, 0xd4, 0x22, 0x21, 0x23, 0x2e, 0x36, 0x30,
-	0xb3, 0x58, 0x48, 0x48, 0x0f, 0xe6, 0x6c, 0xb8, 0xdb, 0xa4, 0xb0, 0x88, 0x29, 0x31, 0x08, 0x69,
-	0x73, 0xb1, 0x06, 0xe7, 0xe7, 0x94, 0xa5, 0x0a, 0x09, 0xc0, 0xa5, 0xa1, 0xee, 0x94, 0xe2, 0x83,
-	0x8b, 0x40, 0x7c, 0xca, 0x90, 0xc4, 0x06, 0x0e, 0x04, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff,
-	0x49, 0x16, 0x9e, 0x2b, 0x15, 0x01, 0x00, 0x00,
+	0xa3, 0x2c, 0x2e, 0x76, 0x3f, 0x88, 0x9b, 0x84, 0x8c, 0xb8, 0xd8, 0xdc, 0x8b, 0x52, 0x53, 0x4b,
+	0x8a, 0x85, 0x84, 0xf4, 0x60, 0xce, 0x86, 0xbb, 0x4d, 0x0a, 0x8b, 0x98, 0x12, 0x83, 0x90, 0x36,
+	0x17, 0x6b, 0x70, 0x7e, 0x4e, 0x59, 0xaa, 0x90, 0x00, 0x5c, 0x1a, 0xea, 0x4e, 0x29, 0x3e, 0xb8,
+	0x08, 0xc4, 0xa7, 0x0c, 0x49, 0x6c, 0xe0, 0x40, 0x30, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x9d,
+	0xe9, 0x9b, 0xd6, 0x15, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -182,108 +182,108 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// GreeterClient is the client API for Greeter service.
+// NpuzzleClient is the client API for Npuzzle service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type GreeterClient interface {
+type NpuzzleClient interface {
 	Greets(ctx context.Context, in *Handshake, opts ...grpc.CallOption) (*Handshake, error)
 	Solve(ctx context.Context, in *Problem, opts ...grpc.CallOption) (*Empty, error)
 }
 
-type greeterClient struct {
+type npuzzleClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewGreeterClient(cc *grpc.ClientConn) GreeterClient {
-	return &greeterClient{cc}
+func NewNpuzzleClient(cc *grpc.ClientConn) NpuzzleClient {
+	return &npuzzleClient{cc}
 }
 
-func (c *greeterClient) Greets(ctx context.Context, in *Handshake, opts ...grpc.CallOption) (*Handshake, error) {
+func (c *npuzzleClient) Greets(ctx context.Context, in *Handshake, opts ...grpc.CallOption) (*Handshake, error) {
 	out := new(Handshake)
-	err := c.cc.Invoke(ctx, "/npuzzle.Greeter/Greets", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/npuzzle.Npuzzle/Greets", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *greeterClient) Solve(ctx context.Context, in *Problem, opts ...grpc.CallOption) (*Empty, error) {
+func (c *npuzzleClient) Solve(ctx context.Context, in *Problem, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/npuzzle.Greeter/Solve", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/npuzzle.Npuzzle/Solve", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// GreeterServer is the server API for Greeter service.
-type GreeterServer interface {
+// NpuzzleServer is the server API for Npuzzle service.
+type NpuzzleServer interface {
 	Greets(context.Context, *Handshake) (*Handshake, error)
 	Solve(context.Context, *Problem) (*Empty, error)
 }
 
-// UnimplementedGreeterServer can be embedded to have forward compatible implementations.
-type UnimplementedGreeterServer struct {
+// UnimplementedNpuzzleServer can be embedded to have forward compatible implementations.
+type UnimplementedNpuzzleServer struct {
 }
 
-func (*UnimplementedGreeterServer) Greets(ctx context.Context, req *Handshake) (*Handshake, error) {
+func (*UnimplementedNpuzzleServer) Greets(ctx context.Context, req *Handshake) (*Handshake, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Greets not implemented")
 }
-func (*UnimplementedGreeterServer) Solve(ctx context.Context, req *Problem) (*Empty, error) {
+func (*UnimplementedNpuzzleServer) Solve(ctx context.Context, req *Problem) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Solve not implemented")
 }
 
-func RegisterGreeterServer(s *grpc.Server, srv GreeterServer) {
-	s.RegisterService(&_Greeter_serviceDesc, srv)
+func RegisterNpuzzleServer(s *grpc.Server, srv NpuzzleServer) {
+	s.RegisterService(&_Npuzzle_serviceDesc, srv)
 }
 
-func _Greeter_Greets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Npuzzle_Greets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Handshake)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GreeterServer).Greets(ctx, in)
+		return srv.(NpuzzleServer).Greets(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/npuzzle.Greeter/Greets",
+		FullMethod: "/npuzzle.Npuzzle/Greets",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GreeterServer).Greets(ctx, req.(*Handshake))
+		return srv.(NpuzzleServer).Greets(ctx, req.(*Handshake))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Greeter_Solve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Npuzzle_Solve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Problem)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GreeterServer).Solve(ctx, in)
+		return srv.(NpuzzleServer).Solve(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/npuzzle.Greeter/Solve",
+		FullMethod: "/npuzzle.Npuzzle/Solve",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GreeterServer).Solve(ctx, req.(*Problem))
+		return srv.(NpuzzleServer).Solve(ctx, req.(*Problem))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _Greeter_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "npuzzle.Greeter",
-	HandlerType: (*GreeterServer)(nil),
+var _Npuzzle_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "npuzzle.Npuzzle",
+	HandlerType: (*NpuzzleServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Greets",
-			Handler:    _Greeter_Greets_Handler,
+			Handler:    _Npuzzle_Greets_Handler,
 		},
 		{
 			MethodName: "Solve",
-			Handler:    _Greeter_Solve_Handler,
+			Handler:    _Npuzzle_Solve_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

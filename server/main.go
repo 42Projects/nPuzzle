@@ -11,7 +11,7 @@ import (
 	"net"
 )
 
-var port = flag.Int("port", 50051, "the server port")
+var port = flag.Int("port", 9090, "the server port")
 
 type server struct{}
 
@@ -70,13 +70,13 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Empty, err
 func main() {
 
 	flag.Parse()
-	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", *port))
+	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", *port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v\n", err)
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterGreeterServer(s, &server{})
+	pb.RegisterNpuzzleServer(s, &server{})
 	log.Printf("starting server on port %v\n", *port)
 	log.Fatalf("failed to serve: %v\n", s.Serve(lis))
 }
