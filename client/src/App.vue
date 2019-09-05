@@ -1,17 +1,42 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="col-9 row">
+      <div class="col-4">
+        <h3>N-Puzzle solver</h3>
+        <Options @updated="updateOptions"/>
+      </div>
+      <Grid :size="size" @changed="updateMatrix"/>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Grid from './components/Grid.vue'
+import Options from './components/Options.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Grid,
+    Options
+  },
+  data () {
+    return {
+      matrix: null,
+      heuristic: 'hamming',
+      search: 'greedy',
+      size: 3
+    }
+  },
+  methods: {
+    updateMatrix (matrix) {
+      this.matrix = matrix
+    },
+    updateOptions (options) {
+      this.heuristic = options.heuristic;
+      this.search = options.search;
+      this.size = options.size;
+    }
   }
 }
 </script>
