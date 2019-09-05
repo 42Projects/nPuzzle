@@ -3,7 +3,7 @@ import App from './App.vue'
 
 Vue.config.productionTip = false;
 
-import { Handshake } from './npuzzle_pb';
+import { Handshake, Problem } from './npuzzle_pb';
 import { NpuzzleClient } from './npuzzle_grpc_web_pb'
 
 let client = new NpuzzleClient('http://' + window.location.hostname + ':8080',
@@ -13,8 +13,23 @@ let client = new NpuzzleClient('http://' + window.location.hostname + ':8080',
 let handshake = new Handshake();
 handshake.setMessage('ping');
 
-client.greets(handshake, {}, (err, response) => {
-  console.log(response.getMessage());
+client.greets(handshake, {}, (err, res) => {
+  console.log(res.getMessage());
+});
+
+let problem = new Problem();
+problem.setHeuristic("manhattan + linear conflicts");
+problem.setSearch("uniform-cost");
+problem.setMatrix("4\n1 5 9 13\n2 6 10 14\n3 7 11 15\n4 8 12 0");
+
+client.solve(problem, {}, (err, res) => {
+  if (res.getSuccess()) {
+    console.log(res.getMoves());
+    console.log(res.getMaxstates());
+    console.log(res.getTotalstates());
+  } else {
+    console.log(err);
+  }
 });
 
 new Vue({

@@ -4,7 +4,7 @@ package npuzzle;
 
 service Npuzzle {
     rpc Greets (Handshake) returns (Handshake) {}
-    rpc Solve (Problem) returns (Empty) {}
+    rpc Solve (Problem) returns (Result) {}
 }
 
 message Empty {}
@@ -17,4 +17,13 @@ message Problem {
     string heuristic = 1;
     string search = 2;
     string matrix = 3;
+}
+
+message Result {
+    bool success = 1;
+    string error = 2;
+    string time = 3;
+    int32 moves = 4;
+    int32 totalStates = 5;
+    int32 maxStates = 6;
 }

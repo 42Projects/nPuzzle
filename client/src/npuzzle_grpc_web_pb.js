@@ -164,18 +164,18 @@ proto.npuzzle.NpuzzlePromiseClient.prototype.greets =
  * @const
  * @type {!grpc.web.MethodDescriptor<
  *   !proto.npuzzle.Problem,
- *   !proto.npuzzle.Empty>}
+ *   !proto.npuzzle.Result>}
  */
 const methodDescriptor_Npuzzle_Solve = new grpc.web.MethodDescriptor(
   '/npuzzle.Npuzzle/Solve',
   grpc.web.MethodType.UNARY,
   proto.npuzzle.Problem,
-  proto.npuzzle.Empty,
+  proto.npuzzle.Result,
   /** @param {!proto.npuzzle.Problem} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.npuzzle.Empty.deserializeBinary
+  proto.npuzzle.Result.deserializeBinary
 );
 
 
@@ -183,15 +183,15 @@ const methodDescriptor_Npuzzle_Solve = new grpc.web.MethodDescriptor(
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
  *   !proto.npuzzle.Problem,
- *   !proto.npuzzle.Empty>}
+ *   !proto.npuzzle.Result>}
  */
 const methodInfo_Npuzzle_Solve = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.npuzzle.Empty,
+  proto.npuzzle.Result,
   /** @param {!proto.npuzzle.Problem} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.npuzzle.Empty.deserializeBinary
+  proto.npuzzle.Result.deserializeBinary
 );
 
 
@@ -200,9 +200,9 @@ const methodInfo_Npuzzle_Solve = new grpc.web.AbstractClientBase.MethodInfo(
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.npuzzle.Empty)}
+ * @param {function(?grpc.web.Error, ?proto.npuzzle.Result)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.npuzzle.Empty>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.npuzzle.Result>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.npuzzle.NpuzzleClient.prototype.solve =
@@ -221,7 +221,7 @@ proto.npuzzle.NpuzzleClient.prototype.solve =
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.npuzzle.Empty>}
+ * @return {!Promise<!proto.npuzzle.Result>}
  *     A native promise that resolves to the response
  */
 proto.npuzzle.NpuzzlePromiseClient.prototype.solve =

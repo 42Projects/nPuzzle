@@ -9,6 +9,9 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"strconv"
+	"strings"
+	"time"
 )
 
 var port = flag.Int("port", 9090, "the server port")
@@ -21,7 +24,20 @@ func (s *server) Greets(ctx context.Context, handshake *pb.Handshake) (*pb.Hands
 	return &pb.Handshake{Message: "pong!"}, nil
 }
 
-func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Empty, error) {
+func computeDuration(begin, end time.Time) string {
+
+	nanoseconds := end.UnixNano() - begin.UnixNano()
+	duration := strconv.FormatInt(nanoseconds, 10)
+	size := len(duration)
+	if size < 10 {
+		duration = fmt.Sprintf("%v%v", strings.Repeat("0", 10-size), duration)
+		size = 10
+	}
+
+	return fmt.Sprintf("%v.%v", duration[:size-9], duration[size-9:size-6])
+}
+
+func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, error) {
 
 	log.Printf("received problem: %v\n", problem)
 
@@ -34,6 +50,12 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Empty, err
 		heuristic = npuzzle.ManhattanDistance
 	case "manhattan + linear conflicts":
 		heuristic = npuzzle.ManhattanPlusLinearConflicts
+	default:
+		return &pb.Result{
+			Success: false,
+			Error: fmt.Sprintf("error: %#v isn't recognized as a valid heuristic function\nAvailable heuristics "+
+				"are:\n - hamming\n - manhattan\n - manhattan + linear conflicts (default)\n", problem.Heuristic),
+		}, nil
 	}
 
 	/* Choose between greedy search and uniform-cost search */
@@ -43,28 +65,44 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Empty, err
 		search = npuzzle.GreedySearch
 	case "uniform-cost":
 		search = npuzzle.UniformCostSearch
+	default:
+		return &pb.Result{
+			Success: false,
+			Error: fmt.Sprintf("error: %#v isn't recognized as a valid search option\nAvailable search "+
+				"options are:\n - greedy\n - uniform-cost (default)", problem.Search),
+		}, nil
 	}
-
-	log.Println(problem.Matrix)
 
 	m, err := npuzzle.ParseMatrix(problem.Matrix)
 	if err != nil {
 		log.Println(err)
+		return &pb.Result{
+			Success: false,
+			Error:   err.Error(),
+		}, nil
 	}
 
 	if npuzzle.IsSolvable(m) == false {
-		log.Println("unsolvable")
+		log.Println("failed to solve problem: unsolvable")
+		return &pb.Result{
+			Success: false,
+			Error:   "unsolvable",
+		}, nil
 	}
 
+	begin := time.Now()
+	log.Printf("starting solve on %v", m)
 	res, totalNumberOfStates, maxNumberOfStates := m.Solve(problem.Search, heuristic, search)
-	fmt.Printf("\n -------------- SOLVED! ---------------\n")
-	fmt.Printf("- heuristic used: %v\n", problem.Heuristic)
-	fmt.Printf("- search: %v\n", problem.Search)
-	fmt.Printf("- total number of states selected: %v\n", totalNumberOfStates)
-	fmt.Printf("- maximum number of states in memory: %v\n", maxNumberOfStates)
-	fmt.Printf("- number of moves: %v\n", res.Cost)
+	duration := computeDuration(begin, time.Now())
+	log.Printf("solved problem %#v in %v seconds", problem.Matrix, duration)
 
-	return &pb.Empty{}, nil
+	return &pb.Result{
+		Success:     true,
+		Time:        duration,
+		TotalStates: int32(totalNumberOfStates),
+		MaxStates:   int32(maxNumberOfStates),
+		Moves:       int32(res.Cost),
+	}, nil
 }
 
 func main() {

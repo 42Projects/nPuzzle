@@ -21,18 +21,24 @@ all: test build
 $(BINDIR):
 	@mkdir -p $@
 
-build: cli server
+build: test | $(BINDIR)
+	@printf "Compiling cli..."
+	@$(GOBUILD) -o $(BINDIR)$(CLINAME) $(CLIDIR)*
+	@printf " done\n"
+	@printf "Compiling server..."
+	@$(GOBUILD) -o $(BINDIR)$(SERVERNAME) $(SERVERDIR)*
+	@printf " done\n"
 
 clean:
 	@$(GOCLEAN)
 	@/bin/rm -rf $(BINDIR)
 
-cli: | $(BINDIR)
+cli: test | $(BINDIR)
 	@printf "Compiling cli..."
 	@$(GOBUILD) -o $(BINDIR)$(CLINAME) $(CLIDIR)*
 	@printf " done\n"
 
-server: | $(BINDIR)
+server: test | $(BINDIR)
 	@printf "Compiling server..."
 	@$(GOBUILD) -o $(BINDIR)$(SERVERNAME) $(SERVERDIR)*
 	@printf " done\n"
