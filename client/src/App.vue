@@ -6,7 +6,10 @@
                 <p>Server status: {{ serverOnline ? 'online' : 'offline' }}</p>
                 <Options @updated="updateOptions" />
                 <FileReader :serverOnline="serverOnline" @loading="loadMatrix"/>
-                <input type="submit" value="Solve" :disabled="!serverOnline" @click="solve">
+                <Generator @click="updateMatrix"/>
+                <b-button type="submit" variant="primary" :disabled="!serverOnline" @click="solve">
+                    Solve
+                </b-button>
             </div>
             <Grid :matrix="matrix"/>
         </div>
@@ -17,6 +20,7 @@
 import { Matrix, Message, Problem } from './npuzzle_pb';
 import { NpuzzleClient } from './npuzzle_grpc_web_pb'
 import FileReader from './components/FileReader.vue'
+import Generator from './components/Generator.vue'
 import Grid from './components/Grid.vue'
 import Options from './components/Options.vue'
 
@@ -24,6 +28,7 @@ export default {
     name: 'app',
     components: {
         FileReader,
+        Generator,
         Grid,
         Options
     },
@@ -40,8 +45,10 @@ export default {
     data () {
         return {
             client: null,
-            matrix: [],
             heuristic: 'hamming',
+            matrix: [],
+            pathIndex: -1,
+            solutionPath: '',
             search: 'greedy',
             serverOnline: false
         }
@@ -81,10 +88,16 @@ export default {
                 });
                 problem.setRowsList(rows);
                 this.client.solve(problem, {}, (err, res) => {
-                    if (err) console.log(err);
-                    if (res) console.log(res);
+                    if (err) {
+                        alert(err);
+                    } else {
+
+                    }
                 })
             }
+        },
+        updateMatrix (matrix) {
+            this.matrix = matrix
         },
         updateOptions (options) {
             this.heuristic = options.heuristic;

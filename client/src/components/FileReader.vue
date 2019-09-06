@@ -1,7 +1,5 @@
 <template>
-    <label class="text-reader">
-        <input type="file" :disabled="!serverOnline" @change="loadTextFromFile"/>
-    </label>
+    <b-form-file placeholder="Choose a file" :disabled="!serverOnline" @change="loadTextFromFile"/>
 </template>
 <script>
 export default {
