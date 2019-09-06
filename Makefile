@@ -2,7 +2,9 @@
 GOCMD :=		go
 GOBUILD :=		$(GOCMD) build
 GOCLEAN :=		$(GOCMD) clean
+GOFMT :=		$(GOCMD)fmt
 GOGET :=		$(GOCMD) get
+GOLINT :=		golint
 GOTEST :=		$(GOCMD) test
 
 # Binary parameters
@@ -38,6 +40,13 @@ cli: test | $(BINDIR)
 	@$(GOBUILD) -o $(BINDIR)$(CLINAME) $(CLIDIR)*
 	@printf " done\n"
 
+fmt:
+	@$(GOFMT) -d $(CLIDIR) $(SERVERDIR) $(SRCDIR)
+	@$(GOFMT) -w $(CLIDIR) $(SERVERDIR) $(SRCDIR)
+
+lint:
+	@$(GOLINT) $(CLIDIR) $(SERVERDIR) $(SRCDIR)
+
 server: test | $(BINDIR)
 	@printf "Compiling server..."
 	@$(GOBUILD) -o $(BINDIR)$(SERVERNAME) $(SERVERDIR)*
@@ -46,4 +55,6 @@ server: test | $(BINDIR)
 test:
 	@$(GOTEST) -v $(SRCDIR)
 
-.PHONY: all build clean cli server test
+valid: fmt lint
+
+.PHONY: all build clean cli fmt lint server test valid

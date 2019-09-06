@@ -10,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 //Variables for command-line display
@@ -17,6 +18,7 @@ var matrixDisplayWidth int
 var itemDisplayWidth int
 
 //Flags
+var d = flag.Bool("display", true, "display solution")
 var h = flag.String("heuristic", "manhattan + linear conflicts", "choose between available heuristics: [\"hamming\", \"manhattan\", \"manhattan + linear conflicts\"]")
 var s = flag.String("search", "uniform-cost", "choose between [\"uniform-cost\", \"greedy\"]")
 
@@ -125,13 +127,19 @@ func main() {
 	itemDisplayWidth = len(strconv.Itoa(size*size - 1))
 	matrixDisplayWidth = itemDisplayWidth*size + size + 1
 
+	fmt.Printf("starting solve on %v...\n", m)
+	begin := time.Now()
 	res, totalNumberOfStates, maxNumberOfStates := m.Solve(*s, heuristic, search)
-	fmt.Printf("\n -------------- SOLVED! ---------------\n")
+	duration := time.Since(begin)
+	fmt.Printf("- solved in: %v\n", duration)
 	fmt.Printf("- heuristic used: %v\n", *h)
 	fmt.Printf("- search: %v\n", *s)
 	fmt.Printf("- total number of states selected: %v\n", totalNumberOfStates)
 	fmt.Printf("- maximum number of states in memory: %v\n", maxNumberOfStates)
 	fmt.Printf("- number of moves: %v\n", res.Cost)
-	fmt.Printf("- path:\n")
-	displayPath(res)
+
+	if *d == true {
+		fmt.Printf("- path:\n")
+		displayPath(res)
+	}
 }

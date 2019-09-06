@@ -9,8 +9,6 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -45,26 +43,13 @@ func (s *server) Parse(ctx context.Context, message *pb.Message) (*pb.Matrix, er
 			uIntRow[rowIndex] = uint32(num)
 		}
 
-		rows[index] = &pb.Matrix_Row{ Num: uIntRow }
+		rows[index] = &pb.Matrix_Row{Num: uIntRow}
 	}
 
 	return &pb.Matrix{
 		Success: true,
-		Rows: rows,
+		Rows:    rows,
 	}, nil
-}
-
-func computeDuration(begin, end time.Time) string {
-
-	nanoseconds := end.UnixNano() - begin.UnixNano()
-	duration := strconv.FormatInt(nanoseconds, 10)
-	size := len(duration)
-	if size < 10 {
-		duration = fmt.Sprintf("%v%v", strings.Repeat("0", 10-size), duration)
-		size = 10
-	}
-
-	return fmt.Sprintf("%v.%v", duration[:size-9], duration[size-9:size-6])
 }
 
 func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, error) {
@@ -122,14 +107,14 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, er
 	}
 
 	begin := time.Now()
-	log.Printf("starting solve on %v", m)
+	log.Printf("starting solve on %v...", m)
 	res, totalNumberOfStates, maxNumberOfStates := m.Solve(problem.Search, heuristic, search)
-	duration := computeDuration(begin, time.Now())
+	duration := time.Since(begin)
 	log.Printf("solved %v in %v seconds", m, duration)
 
 	return &pb.Result{
 		Success:     true,
-		Time:        duration,
+		Time:        duration.String(),
 		TotalStates: int32(totalNumberOfStates),
 		MaxStates:   int32(maxNumberOfStates),
 		Moves:       int32(res.Cost),
