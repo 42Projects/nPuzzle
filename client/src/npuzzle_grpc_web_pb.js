@@ -89,46 +89,46 @@ proto.npuzzle.NpuzzlePromiseClient =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.npuzzle.Handshake,
- *   !proto.npuzzle.Handshake>}
+ *   !proto.npuzzle.Message,
+ *   !proto.npuzzle.Message>}
  */
 const methodDescriptor_Npuzzle_Greets = new grpc.web.MethodDescriptor(
   '/npuzzle.Npuzzle/Greets',
   grpc.web.MethodType.UNARY,
-  proto.npuzzle.Handshake,
-  proto.npuzzle.Handshake,
-  /** @param {!proto.npuzzle.Handshake} request */
+  proto.npuzzle.Message,
+  proto.npuzzle.Message,
+  /** @param {!proto.npuzzle.Message} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.npuzzle.Handshake.deserializeBinary
+  proto.npuzzle.Message.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.npuzzle.Handshake,
- *   !proto.npuzzle.Handshake>}
+ *   !proto.npuzzle.Message,
+ *   !proto.npuzzle.Message>}
  */
 const methodInfo_Npuzzle_Greets = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.npuzzle.Handshake,
-  /** @param {!proto.npuzzle.Handshake} request */
+  proto.npuzzle.Message,
+  /** @param {!proto.npuzzle.Message} request */
   function(request) {
     return request.serializeBinary();
   },
-  proto.npuzzle.Handshake.deserializeBinary
+  proto.npuzzle.Message.deserializeBinary
 );
 
 
 /**
- * @param {!proto.npuzzle.Handshake} request The
+ * @param {!proto.npuzzle.Message} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.npuzzle.Handshake)}
+ * @param {function(?grpc.web.Error, ?proto.npuzzle.Message)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.npuzzle.Handshake>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.npuzzle.Message>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.npuzzle.NpuzzleClient.prototype.greets =
@@ -143,11 +143,11 @@ proto.npuzzle.NpuzzleClient.prototype.greets =
 
 
 /**
- * @param {!proto.npuzzle.Handshake} request The
+ * @param {!proto.npuzzle.Message} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.npuzzle.Handshake>}
+ * @return {!Promise<!proto.npuzzle.Message>}
  *     A native promise that resolves to the response
  */
 proto.npuzzle.NpuzzlePromiseClient.prototype.greets =
@@ -157,6 +157,80 @@ proto.npuzzle.NpuzzlePromiseClient.prototype.greets =
       request,
       metadata || {},
       methodDescriptor_Npuzzle_Greets);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.npuzzle.Message,
+ *   !proto.npuzzle.Matrix>}
+ */
+const methodDescriptor_Npuzzle_Parse = new grpc.web.MethodDescriptor(
+  '/npuzzle.Npuzzle/Parse',
+  grpc.web.MethodType.UNARY,
+  proto.npuzzle.Message,
+  proto.npuzzle.Matrix,
+  /** @param {!proto.npuzzle.Message} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.npuzzle.Matrix.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.npuzzle.Message,
+ *   !proto.npuzzle.Matrix>}
+ */
+const methodInfo_Npuzzle_Parse = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.npuzzle.Matrix,
+  /** @param {!proto.npuzzle.Message} request */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.npuzzle.Matrix.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.npuzzle.Message} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.npuzzle.Matrix)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.npuzzle.Matrix>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.npuzzle.NpuzzleClient.prototype.parse =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/npuzzle.Npuzzle/Parse',
+      request,
+      metadata || {},
+      methodDescriptor_Npuzzle_Parse,
+      callback);
+};
+
+
+/**
+ * @param {!proto.npuzzle.Message} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.npuzzle.Matrix>}
+ *     A native promise that resolves to the response
+ */
+proto.npuzzle.NpuzzlePromiseClient.prototype.parse =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/npuzzle.Npuzzle/Parse',
+      request,
+      metadata || {},
+      methodDescriptor_Npuzzle_Parse);
 };
 
 

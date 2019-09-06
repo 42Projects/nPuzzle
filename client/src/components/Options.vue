@@ -8,10 +8,6 @@
             <p class="mb-1 text-center">A* search variant:</p>
             <b-form-select class="text-center" v-model="search" :options="searchOptions" @change="onUpdate"/>
         </div>
-        <div>
-            <p class="mb-1 text-center">Grid size:</p>
-            <b-form-select class="text-center" v-model="size" :options="sizeOptions" @change="onUpdate"/>
-        </div>
     </div>
 </template>
 
@@ -30,17 +26,14 @@ export default {
                 { value: 'greedy', text: 'Greedy Search' },
                 { value: 'uniform-cost', text: 'Uniform-Cost Search' }
             ],
-            search: 'greedy',
-            size: 3,
-            sizeOptions: [3, 4, 5, 6, 7, 8, 9]
+            search: 'greedy'
         }
     },
     methods: {
-        onUpdate() {
+        onUpdate () {
             this.$emit('updated', {
                 heuristic: this.heuristic,
-                search: this.search,
-                size: this.size
+                search: this.search
             })
         },
     }
