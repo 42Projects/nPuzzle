@@ -53,7 +53,7 @@ func inlineConflicts(current, goal []int) int {
 }
 
 //LinearConflicts calculates conflicts when two tiles are in the same column or row (and their final one) but their goal position is inverted
-func linearConflicts(m1, m2 Matrix) (linearConflict int) {
+func LinearConflicts(m1, m2 Matrix) (linearConflict int) {
 
 	linearConflict = 0
 	for k, row := range m1 {
@@ -95,5 +95,5 @@ func ManhattanDistance(m1, m2 Matrix) (manhattanDistance int) {
 //ManhattanPlusLinearConflicts cumulates manhattan distance heuristic with the cost of linear conflicts
 func ManhattanPlusLinearConflicts(m1, m2 Matrix) (distance int) {
 
-	return ManhattanDistance(m1, m2) + 2*linearConflicts(m1, m2)
+	return ManhattanDistance(m1, m2) + 2*LinearConflicts(m1, m2)
 }

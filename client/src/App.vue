@@ -5,8 +5,8 @@
                 <h3>N-Puzzle solver</h3>
                 <p>Server status: {{ serverOnline ? 'online' : 'offline' }}</p>
                 <Options @updated="updateOptions" />
-                <FileReader @loading="loadMatrix"/>
-                <input type="submit" value="Solve" @click="solve" :disabled="serverStatus">
+                <FileReader :serverOnline="serverOnline" @loading="loadMatrix"/>
+                <input type="submit" value="Solve" :disabled="!serverOnline" @click="solve">
             </div>
             <Grid :matrix="matrix"/>
         </div>
@@ -51,7 +51,7 @@ export default {
             this.matrix = [];
             let message = new Message();
             message.setMessage('ping');
-            this.client.greets(message, {}, (err) => {
+            this.client.greets(message, {}, err => {
                 if (err) {
                     alert('error (' + err.code + "): server isn't responding")
                 } else {

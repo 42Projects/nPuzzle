@@ -18,7 +18,7 @@ SERVERDIR :=	./server/
 SRCDIR :=		./src/
 
 # Rules
-all: test build
+all: valid build
 
 $(BINDIR):
 	@mkdir -p $@

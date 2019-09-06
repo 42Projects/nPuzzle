@@ -41,4 +41,5 @@ message Result {
     int32 moves = 4;
     int32 totalStates = 5;
     int32 maxStates = 6;
+    string path = 7;
 }

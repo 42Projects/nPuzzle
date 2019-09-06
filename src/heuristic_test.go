@@ -47,7 +47,7 @@ func TestHammingDistance(t *testing.T) {
 func TestLinearConflict(t *testing.T) {
 
 	for _, it := range linearConflictsTestCases {
-		res := linearConflicts(it.m1, it.m2)
+		res := LinearConflicts(it.m1, it.m2)
 		if res != it.expected {
 			t.Errorf("Entry %v and %v, got %v, expected %v", it.m1, it.m2, res, it.expected)
 		}

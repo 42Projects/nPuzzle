@@ -54,8 +54,6 @@ func (s *server) Parse(ctx context.Context, message *pb.Message) (*pb.Matrix, er
 
 func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, error) {
 
-	log.Printf("received problem: %v\n", problem)
-
 	/* Choose heuristic function */
 	var heuristic npuzzle.Heuristic
 	switch problem.Heuristic {
@@ -65,12 +63,6 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, er
 		heuristic = npuzzle.ManhattanDistance
 	case "manhattan + linear conflicts":
 		heuristic = npuzzle.ManhattanPlusLinearConflicts
-	default:
-		return &pb.Result{
-			Success: false,
-			Error: fmt.Sprintf("error: %#v isn't recognized as a valid heuristic function\nAvailable heuristics "+
-				"are:\n - hamming\n - manhattan\n - manhattan + linear conflicts (default)\n", problem.Heuristic),
-		}, nil
 	}
 
 	/* Choose between greedy search and uniform-cost search */
@@ -80,12 +72,6 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, er
 		search = npuzzle.GreedySearch
 	case "uniform-cost":
 		search = npuzzle.UniformCostSearch
-	default:
-		return &pb.Result{
-			Success: false,
-			Error: fmt.Sprintf("error: %#v isn't recognized as a valid search option\nAvailable search "+
-				"options are:\n - greedy\n - uniform-cost (default)", problem.Search),
-		}, nil
 	}
 
 	/* Convert protobuf unsigned 32bits integer to regular integer */
@@ -98,6 +84,7 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, er
 		}
 	}
 
+	log.Printf("received problem:\n - heuristic: %v\n - search: %v\n - matrix: %v\n", problem.Heuristic, problem.Search, m)
 	if npuzzle.IsSolvable(m) == false {
 		log.Println("failed to solve problem: unsolvable")
 		return &pb.Result{
@@ -111,13 +98,20 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, er
 	res, totalNumberOfStates, maxNumberOfStates := m.Solve(problem.Search, heuristic, search)
 	duration := time.Since(begin)
 	log.Printf("solved %v in %v seconds", m, duration)
+	var path string
+	if res.Parent == nil {
+		path = "already solved!"
+	} else {
+		path = npuzzle.StringifyPath(res)
+	}
 
 	return &pb.Result{
 		Success:     true,
 		Time:        duration.String(),
+		Moves:       int32(res.Cost),
 		TotalStates: int32(totalNumberOfStates),
 		MaxStates:   int32(maxNumberOfStates),
-		Moves:       int32(res.Cost),
+		Path:        path,
 	}, nil
 }
 

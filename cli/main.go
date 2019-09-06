@@ -137,6 +137,11 @@ func main() {
 	fmt.Printf("- total number of states selected: %v\n", totalNumberOfStates)
 	fmt.Printf("- maximum number of states in memory: %v\n", maxNumberOfStates)
 	fmt.Printf("- number of moves: %v\n", res.Cost)
+	if res.Parent == nil {
+		fmt.Printf("- solving sequence: already solved!\n")
+	} else {
+		fmt.Printf("- solving sequence: %v\n", npuzzle.StringifyPath(res))
+	}
 
 	if *d == true {
 		fmt.Printf("- path:\n")

@@ -1,6 +1,6 @@
 <template>
     <label class="text-reader">
-        <input type="file" @change="loadTextFromFile"/>
+        <input type="file" :disabled="!serverOnline" @change="loadTextFromFile"/>
     </label>
 </template>
 <script>
@@ -14,7 +14,8 @@ export default {
             reader.onload = e => this.$emit('loading', e.target.result);
             reader.readAsText(file);
         }
-    }
+    },
+    props: ['serverOnline']
 }
 </script>
 

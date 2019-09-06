@@ -1153,7 +1153,8 @@ proto.npuzzle.Result.toObject = function(includeInstance, msg) {
     time: jspb.Message.getFieldWithDefault(msg, 3, ""),
     moves: jspb.Message.getFieldWithDefault(msg, 4, 0),
     totalstates: jspb.Message.getFieldWithDefault(msg, 5, 0),
-    maxstates: jspb.Message.getFieldWithDefault(msg, 6, 0)
+    maxstates: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    path: jspb.Message.getFieldWithDefault(msg, 7, "")
   };
 
   if (includeInstance) {
@@ -1213,6 +1214,10 @@ proto.npuzzle.Result.deserializeBinaryFromReader = function(msg, reader) {
     case 6:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setMaxstates(value);
+      break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPath(value);
       break;
     default:
       reader.skipField();
@@ -1282,6 +1287,13 @@ proto.npuzzle.Result.serializeBinaryToWriter = function(message, writer) {
   if (f !== 0) {
     writer.writeInt32(
       6,
+      f
+    );
+  }
+  f = message.getPath();
+  if (f.length > 0) {
+    writer.writeString(
+      7,
       f
     );
   }
@@ -1375,6 +1387,21 @@ proto.npuzzle.Result.prototype.getMaxstates = function() {
 /** @param {number} value */
 proto.npuzzle.Result.prototype.setMaxstates = function(value) {
   jspb.Message.setProto3IntField(this, 6, value);
+};
+
+
+/**
+ * optional string path = 7;
+ * @return {string}
+ */
+proto.npuzzle.Result.prototype.getPath = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+};
+
+
+/** @param {string} value */
+proto.npuzzle.Result.prototype.setPath = function(value) {
+  jspb.Message.setProto3StringField(this, 7, value);
 };
 
 
