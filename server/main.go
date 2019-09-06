@@ -18,10 +18,40 @@ var port = flag.Int("port", 9090, "the server port")
 
 type server struct{}
 
-func (s *server) Greets(ctx context.Context, handshake *pb.Handshake) (*pb.Handshake, error) {
+func (s *server) Greets(ctx context.Context, message *pb.Message) (*pb.Message, error) {
 
-	log.Printf("client handshake: %v\n", handshake.Message)
-	return &pb.Handshake{Message: "pong!"}, nil
+	log.Printf("client handshake: %v\n", message.Message)
+	return &pb.Message{Message: "pong!"}, nil
+}
+
+func (s *server) Parse(ctx context.Context, message *pb.Message) (*pb.Matrix, error) {
+
+	log.Printf("received parsing request: %#v", message.Message)
+	m, err := npuzzle.ParseMatrix(message.Message)
+	if err != nil {
+		log.Println(err)
+		return &pb.Matrix{
+			Success: false,
+			Error:   err.Error(),
+		}, nil
+	}
+
+	rows := make([]*pb.Matrix_Row, len(m))
+	for index, row := range m {
+
+		/* We need unsigned 32bits integer for protobuf */
+		uIntRow := make([]uint32, len(m))
+		for rowIndex, num := range row {
+			uIntRow[rowIndex] = uint32(num)
+		}
+
+		rows[index] = &pb.Matrix_Row{ Num: uIntRow }
+	}
+
+	return &pb.Matrix{
+		Success: true,
+		Rows: rows,
+	}, nil
 }
 
 func computeDuration(begin, end time.Time) string {
@@ -73,13 +103,14 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, er
 		}, nil
 	}
 
-	m, err := npuzzle.ParseMatrix(problem.Matrix)
-	if err != nil {
-		log.Println(err)
-		return &pb.Result{
-			Success: false,
-			Error:   err.Error(),
-		}, nil
+	/* Convert protobuf unsigned 32bits integer to regular integer */
+	size := len(problem.Rows)
+	m := make(npuzzle.Matrix, size)
+	for y, row := range problem.Rows {
+		m[y] = make([]int, size)
+		for x, num := range row.Num {
+			m[y][x] = int(num)
+		}
 	}
 
 	if npuzzle.IsSolvable(m) == false {
@@ -94,7 +125,7 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, er
 	log.Printf("starting solve on %v", m)
 	res, totalNumberOfStates, maxNumberOfStates := m.Solve(problem.Search, heuristic, search)
 	duration := computeDuration(begin, time.Now())
-	log.Printf("solved problem %#v in %v seconds", problem.Matrix, duration)
+	log.Printf("solved %v in %v seconds", m, duration)
 
 	return &pb.Result{
 		Success:     true,

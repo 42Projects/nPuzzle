@@ -3,20 +3,35 @@ syntax = "proto3";
 package npuzzle;
 
 service Npuzzle {
-    rpc Greets (Handshake) returns (Handshake) {}
+    rpc Greets (Message) returns (Message) {}
+    rpc Parse (Message) returns (Matrix) {}
     rpc Solve (Problem) returns (Result) {}
 }
 
 message Empty {}
 
-message Handshake {
+message Matrix {
+    bool success = 1;
+    string error = 2;
+    repeated Row rows = 3;
+
+    message Row {
+        repeated uint32 num = 1;
+    }
+}
+
+message Message {
     string message = 1;
 }
 
 message Problem {
     string heuristic = 1;
     string search = 2;
-    string matrix = 3;
+    repeated Row rows = 3;
+
+    message Row {
+        repeated uint32 num = 1;
+    }
 }
 
 message Result {

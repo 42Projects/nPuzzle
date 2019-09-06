@@ -17,7 +17,8 @@ var invalidMatrixTestCases = []struct {
 	0: {"1"},
 	1: {"A"},
 	2: {"3\n1 2 3\n4 17 16\n20 20 20"},
-	3: {"1 2 3#comment"},
+	3: {"3\n1 2 3\n8 0 4\n7 -6 5"},
+	4: {"1 2 3#comment"},
 }
 
 func matricesMatch(m1, m2 Matrix) bool { return HammingDistance(m1, m2) == 0 }
