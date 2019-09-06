@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+    envoy:
+        build:
+            dockerfile: envoy.Dockerfile
+            context: .
+        ports:
+            - '8080:8080'
+            - '9901:9901'
+        network_mode: host
+        image: helloworld/envoy

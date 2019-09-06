@@ -1,11 +1,13 @@
-package main
+package npuzzle
 
 /*
  * Because of the snail goal pattern, our algorithm to find solvability is a bit different than usual.
  * We invert the standard solvability for size=3 to size=6, then we revert back to normal for the next 4 sizes, and so
  * on... A size which standard solvability is inverted is defined as an odd size
  */
-func isSolvable(m Matrix) bool {
+
+//IsSolvable is our solvability algorithm
+func IsSolvable(m Matrix) bool {
 
 	size := len(m)
 

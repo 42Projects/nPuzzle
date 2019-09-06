@@ -1,4 +1,4 @@
-package main
+package npuzzle
 
 import "testing"
 
@@ -37,7 +37,7 @@ var manhattanDistanceTestCases = []struct {
 func TestHammingDistance(t *testing.T) {
 
 	for _, it := range hammingDistanceTestCases {
-		res := hammingDistance(it.m1, it.m2)
+		res := HammingDistance(it.m1, it.m2)
 		if res != it.expected {
 			t.Errorf("Entry %v and %v, got %v, expected %v", it.m1, it.m2, res, it.expected)
 		}
@@ -47,7 +47,7 @@ func TestHammingDistance(t *testing.T) {
 func TestLinearConflict(t *testing.T) {
 
 	for _, it := range linearConflictsTestCases {
-		res := linearConflicts(it.m1, it.m2)
+		res := LinearConflicts(it.m1, it.m2)
 		if res != it.expected {
 			t.Errorf("Entry %v and %v, got %v, expected %v", it.m1, it.m2, res, it.expected)
 		}
@@ -57,7 +57,7 @@ func TestLinearConflict(t *testing.T) {
 func TestManhattanDistance(t *testing.T) {
 
 	for _, it := range manhattanDistanceTestCases {
-		res := manhattanDistance(it.m1, it.m2)
+		res := ManhattanDistance(it.m1, it.m2)
 		if res != it.expected {
 			t.Errorf("Entry %v and %v, got %v, expected %v", it.m1, it.m2, res, it.expected)
 		}

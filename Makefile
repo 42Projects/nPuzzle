@@ -1,34 +1,60 @@
 # Go parameters
-GOCMD :=	go
-GOBUILD :=	$(GOCMD) build
-GOCLEAN :=	$(GOCMD) clean
-GOGET :=	$(GOCMD) get
-GOTEST :=	$(GOCMD) test
+GOCMD :=		go
+GOBUILD :=		$(GOCMD) build
+GOCLEAN :=		$(GOCMD) clean
+GOFMT :=		$(GOCMD)fmt
+GOGET :=		$(GOCMD) get
+GOLINT :=		golint
+GOTEST :=		$(GOCMD) test
 
 # Binary parameters
-BINDIR :=	./bin/
-BINNAME :=	nPuzzleSolver
+BINDIR :=		./bin/
+CLINAME :=		nPuzzleCli
+SERVERNAME :=	nPuzzleServer
 
 # Sources
-SRCDIR	:=	./src/
+CLIDIR :=		./cli/
+SERVERDIR :=	./server/
+SRCDIR :=		./src/
 
 # Rules
-all: test build
-
-build: | $(BINDIR)
-	@$(GOBUILD) -o $(BINDIR)$(BINNAME) -v $(SRCDIR)*
+all: valid build
 
 $(BINDIR):
 	@mkdir -p $@
 
-benchmark:
-	@$(GOTEST) -bench=. -v ./...
+build: test | $(BINDIR)
+	@printf "Compiling cli..."
+	@$(GOBUILD) -o $(BINDIR)$(CLINAME) $(CLIDIR)*
+	@printf " done\n"
+	@printf "Compiling server..."
+	@$(GOBUILD) -o $(BINDIR)$(SERVERNAME) $(SERVERDIR)*
+	@printf " done\n"
 
 clean:
 	@$(GOCLEAN)
 	@/bin/rm -rf $(BINDIR)
 
-test:
-	@$(GOTEST) -v ./...
+cli: test | $(BINDIR)
+	@printf "Compiling cli..."
+	@$(GOBUILD) -o $(BINDIR)$(CLINAME) $(CLIDIR)*
+	@printf " done\n"
 
-.PHONY: all clean test
+fmt:
+	@$(GOFMT) -d $(CLIDIR) $(SERVERDIR) $(SRCDIR)
+	@$(GOFMT) -w $(CLIDIR) $(SERVERDIR) $(SRCDIR)
+
+lint:
+	@$(GOLINT) $(CLIDIR) $(SERVERDIR) $(SRCDIR)
+
+server: test | $(BINDIR)
+	@printf "Compiling server..."
+	@$(GOBUILD) -o $(BINDIR)$(SERVERNAME) $(SERVERDIR)*
+	@printf " done\n"
+
+test:
+	@$(GOTEST) -v $(SRCDIR)
+
+valid: fmt lint
+
+.PHONY: all build clean cli fmt lint server test valid

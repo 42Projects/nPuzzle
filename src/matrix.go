@@ -1,6 +1,10 @@
-package main
+package npuzzle
 
-import "container/heap"
+import (
+	"bytes"
+	"container/heap"
+	"strconv"
+)
 
 //Direction represents cardinal points
 type Direction int
@@ -81,6 +85,27 @@ func (m Matrix) slide(direction Direction) Matrix {
 	return slid
 }
 
+//Add a string representation to our matrix so we can hash it for the closed set
+func (m Matrix) string() string {
+
+	var buff bytes.Buffer
+	for k, row := range m {
+		if k != 0 {
+			buff.WriteByte('\n')
+		}
+
+		for p, num := range row {
+			if p != 0 {
+				buff.WriteByte(' ')
+			}
+
+			buff.WriteString(strconv.Itoa(num))
+		}
+	}
+
+	return buff.String()
+}
+
 func generateEndState(size int) Matrix {
 
 	m := make(Matrix, size)
@@ -126,31 +151,32 @@ func generateEndState(size int) Matrix {
 	return m
 }
 
-func goalReached(cost, priority int) bool {
+func goalReached(search string, cost, priority int) bool {
 
-	return (*s == "greedy" && priority == 0) || (*s == "uniform-cost" && cost == priority)
+	return (search == "greedy" && priority == 0) || (search == "uniform-cost" && cost == priority)
 }
 
-func (m Matrix) solve(heuristic Heuristic, search Search) (*Item, int, int) {
+//Solve implements A* algorithm
+func (m Matrix) Solve(search string, heuristicFn Heuristic, searchFn Search) (*Item, int, int) {
 
 	closedSet := ClosedSet{}
 	openSet := make(OpenSet, 0)
 	heap.Init(&openSet)
 	endState := generateEndState(len(m))
 	current := &Item{
-		m:        m,
-		cost:     0,
-		priority: heuristic(m, endState),
-		parent:   nil,
+		M:        m,
+		Cost:     0,
+		priority: heuristicFn(m, endState),
+		Parent:   nil,
 	}
 	heap.Push(&openSet, current)
 
 	totalNumberOfStates := 1
 	maxNumberOfStates := 1
-	for openSet.Len() > 0 && goalReached(current.cost, current.priority) == false {
+	for openSet.Len() > 0 && goalReached(search, current.Cost, current.priority) == false {
 
-		closedSet[current.m.string()] = current
-		search(current, heuristic, &openSet, closedSet, endState)
+		closedSet[current.M.string()] = current
+		searchFn(current, heuristicFn, &openSet, closedSet, endState)
 
 		/* We keep track of memory complexity */
 		if size := openSet.Len(); size > maxNumberOfStates {
