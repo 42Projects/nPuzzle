@@ -1,17 +1,21 @@
 <template>
-    <div id="app">
-        <div class="col-9 row">
-            <div class="col-4">
-                <h3>N-Puzzle solver</h3>
+    <div id="app" class="col-9 container">
+        <b-img class="col-md-6" src="logo.png" fluid/>
+        <div class="row">
+
+            <!-- Left side with controls -->
+            <div class="col-md-6 p-0 bg-info">
                 <p>Server status: {{ serverOnline ? 'online' : 'offline' }}</p>
                 <Options @updated="updateOptions" />
                 <FileReader :serverOnline="serverOnline" @loading="loadMatrix"/>
                 <Generator @click="updateMatrix"/>
-                <b-button type="submit" variant="primary" :disabled="!serverOnline" @click="solve">
-                    Solve
-                </b-button>
             </div>
-            <Grid :matrix="matrix"/>
+
+            <!-- Right side with grid and solution -->
+            <div class="col-md-6 p-0 bg-danger">
+                <Grid :matrix="matrix" :disabled="!serverOnline" @solve="solve"/>
+            </div>
+
         </div>
     </div>
 </template>
@@ -46,7 +50,7 @@ export default {
         return {
             client: null,
             heuristic: 'hamming',
-            matrix: [],
+            matrix: null,
             pathIndex: -1,
             solutionPath: '',
             search: 'greedy',
