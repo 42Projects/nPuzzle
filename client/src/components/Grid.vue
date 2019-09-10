@@ -20,16 +20,27 @@
             >
                 Solve
             </b-button>
-            <b-row v-else-if="matrix != null">
-                <b-col><b-button :disabled="pathIndex === 0" @click="previousMove">Prev</b-button></b-col>
-                <b-col>
-                    <b-button :disabled="true" class="bg-transparent move">
-                        {{ pathIndex }} / {{ moves }}
-                    </b-button>
-                </b-col>
-                <b-col><b-button :disabled="pathIndex === moves" @click="nextMove">Next</b-button></b-col>
-                <b-col><b-button class="bg-danger" @click="resetSolution">Reset</b-button></b-col>
-            </b-row>
+            <div v-else-if="matrix != null" class="container">
+                <b-row class="button-row w-75">
+                    <b-col>
+                        <b-button v-if="handle === null" class="bg-info" @click="play">Play</b-button>
+                        <b-button v-else class="bg-info" @click="stop">Stop</b-button>
+                    </b-col>
+                    <b-input-group class="col-md-6" prepend="Speed">
+                        <b-form-select :options="options" v-model="speed"/>
+                    </b-input-group>
+                    <b-col><b-button class="bg-danger" @click="resetSolution">Reset</b-button></b-col>
+                </b-row>
+                <b-row class="button-row w-auto">
+                    <b-col><b-button :disabled="pathIndex === 0" @click="previousMove">Prev</b-button></b-col>
+                    <b-col>
+                        <b-button :disabled="true" class="bg-transparent move">
+                            {{ pathIndex }} / {{ moves }}
+                        </b-button>
+                    </b-col>
+                    <b-col><b-button :disabled="pathIndex === moves" @click="nextMove">Next</b-button></b-col>
+                </b-row>
+            </div>
         </div>
     </div>
 </template>
@@ -39,13 +50,36 @@ export default {
     name: 'Grid',
     data () {
         return {
-            pathIndex: 0
+            handle: null,
+            options: ['x1', 'x2', 'x5', 'x10', 'x25'],
+            pathIndex: 0,
+            speed: 'x1'
         }
     },
     methods: {
         nextMove (event) {
             this.updateGrid(this.path[this.pathIndex]);
             this.pathIndex += 1;
+        },
+        play (event) {
+            this.$emit('play');
+            let delay = 1000;
+            switch (this.speed) {
+                case 'x2':
+                    delay /= 2; break;
+                case 'x5':
+                    delay /= 5; break;
+                case 'x10':
+                    delay /= 10; break;
+                case 'x25':
+                    delay /= 25; break;
+            }
+
+            this.handle = setInterval(() => {
+                this.nextMove();
+                if (this.pathIndex === this.moves)
+                    this.stop();
+            }, delay)
         },
         previousMove (event) {
             this.pathIndex -= 1;
@@ -54,14 +88,19 @@ export default {
             this.updateGrid(reverseMoves[moves.indexOf(this.path[this.pathIndex])]);
         },
         resetSolution (event) {
+            this.stop();
+            this.pathIndex = 0;
             this.$emit('reset');
         },
         solve (event) {
             this.$emit('solve');
         },
+        stop (event) {
+            clearInterval(this.handle);
+            this.$emit('stop');
+            this.handle = null;
+        },
         updateGrid (move) {
-            console.log(move);
-
             let zx = -1, zy = -1;
             for (let y = 0; y < this.matrix.length && zy === -1; y++) {
                 for (let x = 0; x < this.matrix.length && zx === -1; x++) {
@@ -92,6 +131,9 @@ export default {
         },
     },
     props: ['disabled', 'matrix', 'moves', 'path'],
+    watch: {
+        moves: function() { this.pathIndex = 0; }
+    }
 }
 </script>
 
@@ -100,12 +142,16 @@ export default {
     .button {
         display: flex;
         justify-content: center;
-        width: 25vw;
+        width: 35vw;
         margin: 2vh;
     }
 
+    .button-row {
+        margin-bottom: 0.5vh;
+        margin-top: 0.5vh;
+    }
+
     .container {
-        background-color: #fafafa;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -122,6 +168,8 @@ export default {
     }
 
     .move {
+        width: 7vw;
+        flex-grow: 1;
         color: black !important;
         border-color: transparent !important;
         font-size: large;
