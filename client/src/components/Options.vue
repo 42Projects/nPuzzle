@@ -1,13 +1,11 @@
 <template>
     <div class="options">
-        <div>
-            <p class="mb-1 text-center">Heuristic function:</p>
+        <b-input-group prepend="Heuristic function">
             <b-form-select class="text-center" v-model="heuristic" :options="heuristicOptions" @change="onUpdate"/>
-        </div>
-        <div>
-            <p class="mb-1 text-center">A* search variant:</p>
+        </b-input-group>
+        <b-input-group prepend="A* search variant">
             <b-form-select class="text-center" v-model="search" :options="searchOptions" @change="onUpdate"/>
-        </div>
+        </b-input-group>
     </div>
 </template>
 
@@ -42,5 +40,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+    .options {
+        width: 80%;
+    }
 </style>

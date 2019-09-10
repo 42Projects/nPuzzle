@@ -1,9 +1,9 @@
 <template>
-    <div class="col-md-6">
+    <div class="col-md-5">
         <b-input-group prepend="Size">
             <b-form-select :options="options" v-model="size"/>
             <b-input-group-append>
-                <b-button type="submit" variant="primary" :disabled="disabled" @click="generate">Generate</b-button>
+                <b-button type="submit" variant="warning" :disabled="disabled" @click="generate">Generate</b-button>
             </b-input-group-append>
         </b-input-group>
     </div>

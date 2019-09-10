@@ -1,7 +1,6 @@
 <template>
     <div class="container">
         <b-form-file
-                class="col-md-6"
                 placeholder="Choose a file"
                 :disabled="!serverOnline || disabled"
                 @change="loadTextFromFile"

@@ -14,25 +14,25 @@
             <b-button
                     v-if="!solving && matrix && path === ''"
                     type="submit"
-                    variant="primary"
+                    variant="warning"
                     :disabled="disabled"
                     @click="solve"
             >
                 Solve
             </b-button>
-            <b-spinner v-else-if="solving && matrix && path === ''"/>
+            <b-spinner v-else-if="solving && matrix && path === ''" label="Solving..." variant="warning"/>
             <div v-else-if="matrix != null" class="container">
                 <b-row class="button-row w-75">
                     <b-col>
                         <b-button
                                 v-if="handle === null"
-                                class="bg-info"
+                                variant="warning"
                                 :disabled="pathIndex === moves"
                                 @click="play"
                         >
                             Play
                         </b-button>
-                        <b-button v-else class="bg-info" @click="stop">Stop</b-button>
+                        <b-button v-else class="bg-warning" @click="stop">Stop</b-button>
                     </b-col>
                     <b-input-group class="col-md-6" prepend="Speed">
                         <b-form-select :options="options" v-model="speed"/>
@@ -158,7 +158,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     .button {
-        display: flex;
         justify-content: center;
         width: 37vw;
         margin: 2vh;
@@ -186,7 +185,7 @@ export default {
     }
 
     .move {
-        width: 7vw;
+        width: 8vw;
         flex-grow: 1;
         color: black !important;
         border-color: transparent !important;
@@ -214,6 +213,6 @@ export default {
         flex-direction: column;
         flex: 1;
         font-size: 3vh;
-        font-family: AkrutiMal1;
+        font-family: TSCu_Comic;
     }
 </style>

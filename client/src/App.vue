@@ -4,12 +4,25 @@
         <div class="row">
 
             <!-- Left side with controls -->
-            <div class="col-md-6 p-0 bg-info">
-                <p>Server status: {{ serverOnline ? 'online' : 'offline' }}</p>
-                <Options @updated="updateOptions" />
-                <div class="row container">
-                    <FileReader :disabled="disableUpdate" :serverOnline="serverOnline" @loading="loadMatrix"/>
-                    <p>OR</p>
+            <div class="col-md-6 p-0 left-wrapper">
+                <div class="row status-wrapper">
+                    <div>Server status:</div>
+                    <span v-if="serverOnline" v-bind:class="{ 'color': green }">online</span>
+                    <span v-else>offline</span>
+                </div>
+                <div class="options-wrapper">
+                    <Options @updated="updateOptions" />
+                </div>
+                <div class="row picker-wrapper">
+                    <FileReader
+                            class="col-md-5 text-left"
+                            :disabled="disableUpdate"
+                            :serverOnline="serverOnline"
+                            @loading="loadMatrix"
+                    />
+                    <span>
+                        <strong>OR</strong>
+                    </span>
                     <Generator :disabled="disableUpdate" @click="updateMatrix"/>
                 </div>
             </div>
@@ -114,11 +127,15 @@ export default {
                     rows.push(matrixRow);
                 });
                 problem.setRowsList(rows);
+                this.disableUpdate = true;
                 this.solving = true;
                 this.client.solve(problem, {}, (err, res) => {
+                    this.disableUpdate = false;
                     this.solving = false;
                     if (err) {
                         alert(err);
+                    } else if (res.getSuccess() == false) {
+                        alert(res.getError());
                     } else {
                         this.moves = res.getMoves();
                         this.solutionPath = res.getPath();
@@ -146,6 +163,27 @@ export default {
 </script>
 
 <style>
+    .left-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .options-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2vh;
+        margin-top: 2vh;
+    }
+
+    .picker-wrapper {
+        justify-content: space-around;
+    }
+
+    .status-wrapper {
+        background-color: red;
+    }
+
     #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -153,5 +191,12 @@ export default {
         text-align: center;
         color: #2c3e50;
         margin-top: 60px;
+    }
+
+    span {
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        display: flex;
     }
 </style>
