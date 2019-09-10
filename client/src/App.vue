@@ -21,10 +21,12 @@
                         :matrix="matrix"
                         :moves="moves"
                         :path="solutionPath"
+                        :solving="solving"
                         @play="disableUpdate = true"
                         @reset="reset"
                         @solve="solve"
                         @stop="disableUpdate = false"
+                        @unsolve="unsolve"
                 />
             </div>
 
@@ -67,6 +69,7 @@ export default {
             matrix: null,
             moves: 0,
             solutionPath: '',
+            solving: false,
             search: 'greedy',
             serverOnline: false
         }
@@ -98,8 +101,6 @@ export default {
         },
         reset () {
             this.matrix = this.initialMatrix.map(row => row.slice());
-            this.moves = '';
-            this.solutionPath = '';
         },
         solve () {
             if (this.serverOnline) {
@@ -113,7 +114,9 @@ export default {
                     rows.push(matrixRow);
                 });
                 problem.setRowsList(rows);
+                this.solving = true;
                 this.client.solve(problem, {}, (err, res) => {
+                    this.solving = false;
                     if (err) {
                         alert(err);
                     } else {
@@ -122,6 +125,11 @@ export default {
                     }
                 })
             }
+        },
+        unsolve () {
+            this.matrix = this.initialMatrix.map(row => row.slice());
+            this.moves = '';
+            this.solutionPath = '';
         },
         updateMatrix (matrix) {
             this.moves = 0;

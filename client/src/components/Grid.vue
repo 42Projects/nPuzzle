@@ -12,7 +12,7 @@
         </div>
         <div class="button">
             <b-button
-                    v-if="matrix != null && path === ''"
+                    v-if="!solving && matrix && path === ''"
                     type="submit"
                     variant="primary"
                     :disabled="disabled"
@@ -20,16 +20,29 @@
             >
                 Solve
             </b-button>
+            <b-spinner v-else-if="solving && matrix && path === ''"/>
             <div v-else-if="matrix != null" class="container">
                 <b-row class="button-row w-75">
                     <b-col>
-                        <b-button v-if="handle === null" class="bg-info" @click="play">Play</b-button>
+                        <b-button
+                                v-if="handle === null"
+                                class="bg-info"
+                                :disabled="pathIndex === moves"
+                                @click="play"
+                        >
+                            Play
+                        </b-button>
                         <b-button v-else class="bg-info" @click="stop">Stop</b-button>
                     </b-col>
                     <b-input-group class="col-md-6" prepend="Speed">
                         <b-form-select :options="options" v-model="speed"/>
                     </b-input-group>
-                    <b-col><b-button class="bg-danger" @click="resetSolution">Reset</b-button></b-col>
+                    <b-col v-if="pathIndex === 0">
+                        <b-button class="bg-danger" @click="unsolve">Unsolve</b-button>
+                    </b-col>
+                    <b-col v-else>
+                        <b-button class="bg-danger" @click="reset">Reset</b-button>
+                    </b-col>
                 </b-row>
                 <b-row class="button-row w-auto">
                     <b-col><b-button :disabled="pathIndex === 0" @click="previousMove">Prev</b-button></b-col>
@@ -87,7 +100,7 @@ export default {
             const reverseMoves = ['D', 'U', 'L', 'R'];
             this.updateGrid(reverseMoves[moves.indexOf(this.path[this.pathIndex])]);
         },
-        resetSolution (event) {
+        reset (event) {
             this.stop();
             this.pathIndex = 0;
             this.$emit('reset');
@@ -99,6 +112,11 @@ export default {
             clearInterval(this.handle);
             this.$emit('stop');
             this.handle = null;
+        },
+        unsolve (event) {
+            this.stop();
+            this.pathIndex = 0;
+            this.$emit('unsolve');
         },
         updateGrid (move) {
             let zx = -1, zy = -1;
@@ -130,7 +148,7 @@ export default {
             }
         },
     },
-    props: ['disabled', 'matrix', 'moves', 'path'],
+    props: ['disabled', 'matrix', 'moves', 'path', 'solving'],
     watch: {
         moves: function() { this.pathIndex = 0; }
     }
@@ -142,7 +160,7 @@ export default {
     .button {
         display: flex;
         justify-content: center;
-        width: 35vw;
+        width: 37vw;
         margin: 2vh;
     }
 
