@@ -66,11 +66,14 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, er
 	}
 
 	/* Choose between greedy search and uniform-cost search */
+	var goal npuzzle.Goal
 	var search npuzzle.Search
 	switch problem.Search {
 	case "greedy":
+		goal = npuzzle.GreedyGoalReached
 		search = npuzzle.GreedySearch
 	case "uniform-cost":
+		goal = npuzzle.UniformCostGoalReached
 		search = npuzzle.UniformCostSearch
 	}
 
@@ -95,7 +98,15 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, er
 
 	begin := time.Now()
 	log.Printf("starting solve on %v...", m)
-	res, totalNumberOfStates, maxNumberOfStates := m.Solve(problem.Search, heuristic, search)
+	res, totalNumberOfStates, maxNumberOfStates, err := m.Solve(heuristic, search, goal, 30*time.Second)
+	if err != nil {
+		log.Printf("timed ouf after %v", 30*time.Second)
+		return &pb.Result{
+			Success: false,
+			Error:   fmt.Sprintf("timed ouf after %v", 30*time.Second),
+		}, nil
+	}
+
 	duration := time.Since(begin)
 	log.Printf("solved %v in %v seconds", m, duration)
 	var path string

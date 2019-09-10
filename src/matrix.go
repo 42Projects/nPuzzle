@@ -3,7 +3,9 @@ package npuzzle
 import (
 	"bytes"
 	"container/heap"
+	"fmt"
 	"strconv"
+	"time"
 )
 
 //Direction represents cardinal points
@@ -151,13 +153,20 @@ func generateEndState(size int) Matrix {
 	return m
 }
 
-func goalReached(search string, cost, priority int) bool {
+//Goal represents a boolean returning function to check whether goal is reached or not
+type Goal func(int, int) bool
 
-	return (search == "greedy" && priority == 0) || (search == "uniform-cost" && cost == priority)
-}
+//GreedyGoalReached is the goal function for greedy search type
+func GreedyGoalReached(cost, priority int) bool { return priority == 0 }
+
+//UniformCostGoalReached is the goal function for uniform-cost search type
+func UniformCostGoalReached(cost, priority int) bool { return cost == priority }
 
 //Solve implements A* algorithm
-func (m Matrix) Solve(search string, heuristicFn Heuristic, searchFn Search) (*Item, int, int) {
+func (m Matrix) Solve(heuristic Heuristic, search Search, goal Goal, timeout time.Duration) (*Item, int, int, error) {
+
+	timer := time.NewTimer(timeout)
+	defer timer.Stop()
 
 	closedSet := ClosedSet{}
 	openSet := make(OpenSet, 0)
@@ -166,17 +175,23 @@ func (m Matrix) Solve(search string, heuristicFn Heuristic, searchFn Search) (*I
 	current := &Item{
 		M:        m,
 		Cost:     0,
-		priority: heuristicFn(m, endState),
+		priority: heuristic(m, endState),
 		Parent:   nil,
 	}
 	heap.Push(&openSet, current)
 
 	totalNumberOfStates := 1
 	maxNumberOfStates := 1
-	for openSet.Len() > 0 && goalReached(search, current.Cost, current.priority) == false {
+	for openSet.Len() > 0 && goal(current.Cost, current.priority) == false {
+
+		select {
+		case <-timer.C:
+			return nil, -1, -1, fmt.Errorf("timed out after %v", timeout)
+		default:
+		}
 
 		closedSet[current.M.string()] = current
-		searchFn(current, heuristicFn, &openSet, closedSet, endState)
+		search(current, heuristic, &openSet, closedSet, endState)
 
 		/* We keep track of memory complexity */
 		if size := openSet.Len(); size > maxNumberOfStates {
@@ -187,5 +202,5 @@ func (m Matrix) Solve(search string, heuristicFn Heuristic, searchFn Search) (*I
 		totalNumberOfStates++
 	}
 
-	return current, totalNumberOfStates, maxNumberOfStates
+	return current, totalNumberOfStates, maxNumberOfStates, nil
 }

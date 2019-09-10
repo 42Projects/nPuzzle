@@ -21,6 +21,7 @@ var itemDisplayWidth int
 var d = flag.Bool("display", true, "display solution")
 var h = flag.String("heuristic", "manhattan + linear conflicts", "choose between available heuristics: [\"hamming\", \"manhattan\", \"manhattan + linear conflicts\"]")
 var s = flag.String("search", "uniform-cost", "choose between [\"uniform-cost\", \"greedy\"]")
+var t = flag.Duration("timeout", 60*time.Second, "set a time out duration")
 
 func displayPath(it *npuzzle.Item) {
 
@@ -78,11 +79,14 @@ func main() {
 	}
 
 	/* Choose between greedy search and uniform-cost search */
+	var goal npuzzle.Goal
 	var search npuzzle.Search
 	switch *s {
 	case "greedy":
+		goal = npuzzle.GreedyGoalReached
 		search = npuzzle.GreedySearch
 	case "uniform-cost":
+		goal = npuzzle.UniformCostGoalReached
 		search = npuzzle.UniformCostSearch
 	default:
 		log.Fatalf("error: %#v isn't recognized as a valid search option\nAvailable search options are:\n"+
@@ -129,7 +133,11 @@ func main() {
 
 	fmt.Printf("starting solve on %v...\n", m)
 	begin := time.Now()
-	res, totalNumberOfStates, maxNumberOfStates := m.Solve(*s, heuristic, search)
+	res, totalNumberOfStates, maxNumberOfStates, err := m.Solve(heuristic, search, goal, *t)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	duration := time.Since(begin)
 	fmt.Printf("- solved in: %v\n", duration)
 	fmt.Printf("- heuristic used: %v\n", *h)
