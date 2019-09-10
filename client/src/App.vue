@@ -7,13 +7,23 @@
             <div class="col-md-6 p-0 bg-info">
                 <p>Server status: {{ serverOnline ? 'online' : 'offline' }}</p>
                 <Options @updated="updateOptions" />
-                <FileReader :serverOnline="serverOnline" @loading="loadMatrix"/>
-                <Generator @click="updateMatrix"/>
+                <div class="row container">
+                    <FileReader :serverOnline="serverOnline" @loading="loadMatrix"/>
+                    <p>OR</p>
+                    <Generator @click="updateMatrix"/>
+                </div>
             </div>
 
             <!-- Right side with grid and solution -->
             <div class="col-md-6 p-0 bg-danger">
-                <Grid :matrix="matrix" :disabled="!serverOnline" @solve="solve"/>
+                <Grid
+                        :disabled="!serverOnline"
+                        :matrix="matrix"
+                        :moves="moves"
+                        :path="solutionPath"
+                        @reset="reset"
+                        @solve="solve"
+                />
             </div>
 
         </div>
@@ -51,7 +61,8 @@ export default {
             client: null,
             heuristic: 'hamming',
             matrix: null,
-            pathIndex: -1,
+            matrixInitial: null,
+            moves: 0,
             solutionPath: '',
             search: 'greedy',
             serverOnline: false
@@ -59,6 +70,7 @@ export default {
     },
     methods: {
         loadMatrix (text) {
+            this.reset();
             this.matrix = [];
             let message = new Message();
             message.setMessage('ping');
@@ -79,6 +91,10 @@ export default {
                 }
             });
         },
+        reset () {
+            this.moves = '';
+            this.solutionPath = '';
+        },
         solve () {
             if (this.serverOnline) {
                 let problem = new Problem();
@@ -95,13 +111,16 @@ export default {
                     if (err) {
                         alert(err);
                     } else {
-
+                        this.moves = res.getMoves();
+                        this.solutionPath = res.getPath();
+                        console.log(this.moves)
                     }
                 })
             }
         },
         updateMatrix (matrix) {
-            this.matrix = matrix
+            this.reset();
+            this.matrix = matrix;
         },
         updateOptions (options) {
             this.heuristic = options.heuristic;

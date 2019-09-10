@@ -1,11 +1,11 @@
 <template>
-    <div>
-        <b-form-input type="number" v-model="size"></b-form-input>
-        <b-form-group>
-            <b-form-radio v-model="picked" value="solvable">Solvable</b-form-radio>
-            <b-form-radio v-model="picked" value="unsolvable">Unsolvable</b-form-radio>
-        </b-form-group>
-        <b-button type="submit" variant="primary" @click="generate">Generate</b-button>
+    <div class="col-md-6">
+        <b-input-group prepend="Size">
+            <b-form-select :options="options" v-model="size"/>
+            <b-input-group-append>
+                <b-button type="submit" variant="primary" @click="generate">Generate</b-button>
+            </b-input-group-append>
+        </b-input-group>
     </div>
 </template>
 
@@ -14,8 +14,8 @@ export default {
     name: 'Generator',
     data () {
         return {
-            size: 3,
-            picked: 'solvable'
+            options: [3, 4, 5, 6, 7, 8, 9],
+            size: 3
         }
     },
     methods: {
@@ -61,15 +61,6 @@ export default {
                     endState[move] = 0;
                 }
 
-                /* Solvability */
-                if (this.picked === 'unsolvable') {
-                    if (endState[0] === 0 || endState[1] === 0) {
-                        [endState[-1], endState[-2]] = [endState[-2], endState[-1]]
-                    } else {
-                        [endState[0], endState[1]] = [endState[1], endState[0]]
-                    }
-                }
-
                 /* Convert to 2D array */
                 let index = 0;
                 let matrix = Array.apply(null, Array(size)).map(() => {});
@@ -86,8 +77,3 @@ export default {
     }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>
