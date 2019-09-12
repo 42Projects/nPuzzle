@@ -1,15 +1,20 @@
 <template>
-    <div id="app" class="col-9 container">
-        <b-img class="col-md-6" src="logo.png" fluid/>
+    <div id="app" class="container">
+        <b-navbar variant="faded" type="light">
+            <b-navbar-brand href="#">
+                <img src="logo.png" alt="nPuzzle">
+            </b-navbar-brand>
+            <b-nav-text right></b-nav-text>
+            <div class="row status-wrapper">
+                <div id="status">Server status:</div>
+                <b-badge v-if="serverOnline" class="d-flex" variant="success">Online</b-badge>
+                <b-badge v-else class="d-flex" variant="danger">Offline</b-badge>
+            </div>
+        </b-navbar>
         <div class="row">
 
             <!-- Left side with controls -->
             <div class="col-md-6 p-0 left-wrapper">
-                <div class="row status-wrapper">
-                    <div>Server status:</div>
-                    <span v-if="serverOnline" v-bind:class="{ 'color': green }">online</span>
-                    <span v-else>offline</span>
-                </div>
                 <div class="options-wrapper">
                     <Options @updated="updateOptions" />
                 </div>
@@ -71,15 +76,15 @@ export default {
             this.client.greets(message, {}, err => this.serverOnline = !err);
         };
         ping();
-        window.setInterval(ping, 5000);
+        window.setInterval(ping, 1000);
     },
     data () {
         return {
             client: null,
             disableUpdate: false,
             heuristic: 'hamming',
-            initialMatrix: null,
-            matrix: null,
+            initialMatrix: [[1, 2, 3], [8, 0, 4], [7, 6, 5]],
+            matrix: [[1, 2, 3], [8, 0, 4], [7, 6, 5]],
             moves: 0,
             solutionPath: '',
             solving: false,
@@ -181,7 +186,8 @@ export default {
     }
 
     .status-wrapper {
-        background-color: red;
+        align-self: center;
+        width: max-content;
     }
 
     #app {
@@ -190,7 +196,21 @@ export default {
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
         color: #2c3e50;
-        margin-top: 60px;
+    }
+
+    .navbar {
+        margin-left: -20%;
+        width: 140%;
+    }
+
+    #status {
+        margin-right: 0.5vw;
+    }
+
+    img {
+        margin-left: -15%;
+        height: 6vh;
+        width: auto;
     }
 
     span {

@@ -18,7 +18,6 @@ type server struct{}
 
 func (s *server) Greets(ctx context.Context, message *pb.Message) (*pb.Message, error) {
 
-	log.Printf("client handshake: %v\n", message.Message)
 	return &pb.Message{Message: "pong!"}, nil
 }
 

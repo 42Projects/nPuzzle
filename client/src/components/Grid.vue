@@ -193,7 +193,7 @@ export default {
     }
 
     .number {
-        background-color: #e1e1e1;
+        background: -moz-linear-gradient(-45deg, #ff794d 0%, #ffa64d 23%, #ffd24d 69%, #ffdb4d 100%); /* FF3.6-15 */
     }
 
     .row {
