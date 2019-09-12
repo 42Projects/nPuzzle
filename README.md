@@ -1,10 +1,10 @@
 # nPuzzle
 
-#Web-app
+## Web-app
 
 ![front](https://github.com/42Projects/nPuzzle/blob/master/misc/front.png)
 
-###Installation
+### Installation
 Requirements:
  - go (if you need to compile from source)
  - nodejs
@@ -18,15 +18,16 @@ Start the backend:
 
 `$ docker-compose up -d ; ./bin/nPuzzleServer&`
 
+### Usage
 Then run the project with:
 
 `$ npm run serve --prefix ./client &>/dev/null &`
 
 Application is now available on localhost:8081
 
-#CLI
+## CLI
 
-###Installation
+### Installation
 Requirements:
  - go (if you need to compile from source)
 
@@ -34,7 +35,7 @@ You can either use the ELF-64 binary ./bin/nPuzzleCli if your arch allows it, or
 
 `$ make cli`
 
-###Usage
+### Usage
 
 `$ ./bin/nPuzzleCli [options] [file]`
 
