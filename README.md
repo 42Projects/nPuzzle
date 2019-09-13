@@ -53,4 +53,5 @@ Options:
 If no file is provided, binary will await entry from standard input.
 
 You can also use the python puzzle generator with:
+
 `$ ./misc/res_npuzzle-gen.py [-s | -u] [size] | ./bin/nPuzzleCli [options]`
