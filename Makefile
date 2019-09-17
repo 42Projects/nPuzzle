@@ -1,16 +1,15 @@
 # Go parameters
 GOCMD :=		go
 GOBUILD :=		$(GOCMD) build
-GOCLEAN :=		$(GOCMD) clean
-GOFMT :=		$(GOCMD)fmt
 GOGET :=		$(GOCMD) get
-GOLINT :=		golint
+GORUN :=		$(GOCMD) run
 GOTEST :=		$(GOCMD) test
+GOFMT :=		gofmt
+GOLINT :=		golint
 
 # Binary parameters
 BINDIR :=		./bin/
 CLINAME :=		nPuzzleCli
-SERVERNAME :=	nPuzzleServer
 
 # Sources
 CLIDIR :=		./cli/
@@ -18,27 +17,24 @@ SERVERDIR :=	./server/
 SRCDIR :=		./src/
 
 # Rules
-all: valid build
+all: build
 
 $(BINDIR):
 	@mkdir -p $@
 
-build: test | $(BINDIR)
+build: valid test | $(BINDIR)
 	@printf "Compiling cli..."
 	@$(GOBUILD) -o $(BINDIR)$(CLINAME) $(CLIDIR)*
-	@printf " done\n"
-	@printf "Compiling server..."
-	@$(GOBUILD) -o $(BINDIR)$(SERVERNAME) $(SERVERDIR)*
 	@printf " done\n"
 
 clean:
-	@$(GOCLEAN)
 	@/bin/rm -rf $(BINDIR)
 
-cli: test | $(BINDIR)
-	@printf "Compiling cli..."
-	@$(GOBUILD) -o $(BINDIR)$(CLINAME) $(CLIDIR)*
-	@printf " done\n"
+deploy: valid test | $(BINDIR)
+	docker-compose -f deploy/docker-compose.yml up -d
+
+down:
+	docker-compose -f deploy/docker-compose.yml down
 
 fmt:
 	@$(GOFMT) -d $(CLIDIR) $(SERVERDIR) $(SRCDIR)
@@ -47,14 +43,15 @@ fmt:
 lint:
 	@$(GOLINT) $(CLIDIR) $(SERVERDIR) $(SRCDIR)
 
-server: test | $(BINDIR)
-	@printf "Compiling server..."
-	@$(GOBUILD) -o $(BINDIR)$(SERVERNAME) $(SERVERDIR)*
-	@printf " done\n"
+serve:
+	@$(GORUN) $(SERVERDIR)/main.go
+
+teardown:
+	docker-compose -f deploy/docker-compose.yml down --rmi all
 
 test:
 	@$(GOTEST) -v $(SRCDIR)
 
 valid: fmt lint
 
-.PHONY: all build clean cli fmt lint server test valid
+.PHONY: deploy

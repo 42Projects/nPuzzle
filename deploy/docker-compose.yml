@@ -1,0 +1,27 @@
+version: '3.3'
+services:
+    envoy:
+        build:
+            context: .
+            dockerfile: envoy.Dockerfile
+        image: npuzzle/envoy
+        network_mode: host
+        ports:
+            - '8080:8080'
+            - '9901:9901'
+
+    server:
+        build:
+            context: ../.
+            dockerfile: deploy/server.Dockerfile
+        image: npuzzle/server
+        ports:
+            - '9090:9090'
+
+    client:
+        build:
+            context: ../.
+            dockerfile: deploy/client.Dockerfile
+        image: npuzzle/client
+        ports:
+            - '8081:8081'

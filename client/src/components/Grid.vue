@@ -35,7 +35,7 @@
                         <b-button v-else class="bg-warning" @click="stop">Stop</b-button>
                     </b-col>
                     <b-input-group class="col-md-6" prepend="Speed">
-                        <b-form-select :options="options" v-model="speed"/>
+                        <b-form-select :disabled="handle" :options="options" v-model="speed"/>
                     </b-input-group>
                     <b-col v-if="pathIndex === 0">
                         <b-button class="bg-danger" @click="unsolve">Unsolve</b-button>

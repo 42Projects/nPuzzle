@@ -6,24 +6,14 @@
 
 ### Installation
 Requirements:
- - go (if you need to compile from source)
- - nodejs
  - docker
 
-You can either use the ELF-64 binary ./bin/nPuzzleServer if your arch allows it, or compile a new binary from source with:
+`$ make deploy`
 
-`$ make server`
-
-Start the backend:
-
-`$ docker-compose up -d ; ./bin/nPuzzleServer&`
+Wait for it...
 
 ### Usage
-Then run the project with:
-
-`$ npm run serve --prefix ./client &>/dev/null &`
-
-Application is now available on localhost:8081
+...application is now available on localhost:8080
 
 ## CLI
 

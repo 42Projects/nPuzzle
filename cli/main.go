@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	npuzzle "github.com/terry-finkel/nPuzzle/src"
+	npuzzle "github.com/42Projects/nPuzzle/src"
 	"io/ioutil"
 	"log"
 	"os"
