@@ -7,6 +7,7 @@
 ### Installation
 Requirements:
  - docker
+ - docker-compose
 
 `$ make deploy`
 
