@@ -30,7 +30,7 @@ build: valid test | $(BINDIR)
 clean:
 	@/bin/rm -rf $(BINDIR)
 
-deploy: valid test | $(BINDIR)
+deploy:
 	docker-compose -f deploy/docker-compose.yml up -d
 
 down:
