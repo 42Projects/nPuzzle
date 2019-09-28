@@ -12,6 +12,7 @@ import (
 	"time"
 )
 
+var address = flag.String("address", "0.0.0.0", "the server address")
 var port = flag.Int("port", 9090, "the server port")
 
 type server struct{}
@@ -128,7 +129,7 @@ func (s *server) Solve(ctx context.Context, problem *pb.Problem) (*pb.Result, er
 func main() {
 
 	flag.Parse()
-	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", *port))
+	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%d", *address, *port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v\n", err)
 	}

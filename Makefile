@@ -31,10 +31,10 @@ clean:
 	@/bin/rm -rf $(BINDIR)
 
 deploy:
-	docker-compose -f deploy/docker-compose.yml up -d
+	docker-compose up
 
 down:
-	docker-compose -f deploy/docker-compose.yml down
+	docker-compose down
 
 fmt:
 	@$(GOFMT) -d $(CLIDIR) $(SERVERDIR) $(SRCDIR)
@@ -47,7 +47,7 @@ serve:
 	@$(GORUN) $(SERVERDIR)/main.go
 
 teardown:
-	docker-compose -f deploy/docker-compose.yml down --rmi all
+	docker-compose down --rmi all
 
 test:
 	@$(GOTEST) -v $(SRCDIR)

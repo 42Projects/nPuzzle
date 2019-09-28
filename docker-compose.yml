@@ -2,8 +2,8 @@ version: '3.3'
 services:
     envoy:
         build:
-            context: .
-            dockerfile: envoy.Dockerfile
+            context: envoy
+            dockerfile: Dockerfile
         image: npuzzle/envoy
         network_mode: host
         ports:
@@ -12,21 +12,23 @@ services:
 
     server:
         build:
-            context: ../.
-            dockerfile: deploy/server.Dockerfile
+            context: .
+            dockerfile: server/Dockerfile
         depends_on:
             - "envoy"
         image: npuzzle/server
+        network_mode: host
         ports:
             - '9090:9090'
 
     client:
         build:
-            context: ../.
-            dockerfile: deploy/client.Dockerfile
+            context: client
+            dockerfile: Dockerfile
         depends_on:
             - "server"
             - "envoy"
         image: npuzzle/client
+        network_mode: host
         ports:
             - '8081:8081'
